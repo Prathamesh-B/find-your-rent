@@ -1,3 +1,4 @@
+import Navbar from './components/Navbar/NavBar'
 import { MantineProvider } from '@mantine/core';
 import { Poppins } from 'next/font/google'
 import './globals.css'
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={poppins.className}>
         <MantineProvider>
+          <Navbar />
           {children}
         </MantineProvider>
       </body>
