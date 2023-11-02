@@ -12,19 +12,21 @@
     "@mantine/core": "^7.1.7",
     "@mantine/hooks": "^7.1.7",
     "@mantine/notifications": "^7.1.7",
+    "@prisma/client": "^5.5.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
     "next": "14.0.1",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@types/node": "20.8.10",
-    "@types/react": "18.2.33",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.1",
     "postcss": "^8.4.31",
     "postcss-preset-mantine": "^1.9.0",
     "postcss-simple-vars": "^7.0.1",
+    "prisma": "^5.5.2",
     "tailwindcss": "^3.3.0"
   }
 }

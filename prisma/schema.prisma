@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String   @unique
+  password  String
+  items     Item[]   // User can have multiple items for rent
+  rentals   Rental[] // User can have multiple rentals
+}
+
+model Item {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  owner       User      @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  photos      String[]  // You can store image URLs or file paths here
+  isAvailable Boolean   @default(true)
+  rentals     Rental[]  // Item can be rented multiple times
+}
+
+model Rental {
+  id          Int       @id @default(autoincrement())
+  renter      User      @relation(fields: [renterId], references: [id])
+  renterId    Int
+  item        Item      @relation(fields: [itemId], references: [id])
+  itemId      Int
+  startDate   DateTime
+  endDate     DateTime
+  status      String    // You can define different statuses like "pending," "completed," etc.
+}
