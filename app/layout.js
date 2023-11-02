@@ -3,6 +3,7 @@ import { MantineProvider } from '@mantine/core';
 import { Poppins } from 'next/font/google'
 import './globals.css'
 import '@mantine/core/styles.css';
+import Footer from './components/Footer/Footer';
 
 const poppins = Poppins({ subsets: ['latin'], weight: "400" })
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
         <MantineProvider>
           <Navbar />
           {children}
+          <Footer />
         </MantineProvider>
       </body>
     </html>
