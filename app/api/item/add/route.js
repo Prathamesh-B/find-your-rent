@@ -7,7 +7,6 @@ export async function POST(req) {
         const body = await req.json();
         const { title, description, price, authToken, photos, isAvailable } = body;
         const UserID = jwt.verify(authToken, process.env.JWT_SECRET);
-        console.log(UserID)
         const newItem = await prisma.item.create({
             data: {
                 title,
