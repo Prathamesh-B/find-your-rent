@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.max-width {
-  @apply max-w-[1440px] mx-auto;
-}
-
 .padding-x {
   @apply sm:px-16 px-6;
 }
@@ -20,8 +16,4 @@
 
 .flex-between {
   @apply flex justify-between items-center;
-}
-
-.custom-btn {
-  @apply flex flex-row relative justify-center items-center py-3 px-6 outline-none;
 }
