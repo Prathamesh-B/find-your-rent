@@ -6,13 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from '@mantine/dropzone';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import supabase  from '../../lib/supabaseClient';
 
 
 const ItemAdd = () => {
-    const supabaseUrl = "https://lnskelhtnpghxaugopjz.supabase.co"
-    const supabaseKey = process.env.SUPABASE_API_KEY
-    const supabase = createClient(supabaseUrl, supabaseKey)
     const [files, setFiles] = useState([]);
     const [credentials, setCredentials] = useState({ title: "", description: "", price: 0 })
     const previews = files.map((file, index) => {
@@ -23,7 +20,7 @@ const ItemAdd = () => {
     const handleSubmit = async (e, token) => {
         e.preventDefault();
         const photo = [];
-        files.map((file, index) => {
+        files.map((file) => {
             let name = uuidv4()
             uploadImage(name, file)
             const { data } = supabase.storage.from('image').getPublicUrl(`${name}`)
