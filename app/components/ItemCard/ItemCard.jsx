@@ -1,8 +1,9 @@
 "use client";
+
 import { Card, Image, Text, Badge, Button, Group, Grid } from "@mantine/core";
 import Link from "next/link";
 
-const ItemCards = () => {
+const ItemCard = () => {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
@@ -53,4 +54,4 @@ const ItemCards = () => {
   );
 };
 
-export default ItemCards;
+export default ItemCard;
