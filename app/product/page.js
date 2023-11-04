@@ -11,7 +11,7 @@ const ProductPage = () => {
                     <Group justify="center" align="flex-start">
                         <Image
                             radius="md"
-                            src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                            src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
                             h={400}
                             p={10}
                             w="auto"
@@ -23,7 +23,7 @@ const ProductPage = () => {
                         <Group justify="center" align="flex-start">
                             <div>
                                 <Image
-                                    src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                                    src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
                                     h={80}
                                     radius="md"
                                     alt="Norway"
@@ -31,7 +31,7 @@ const ProductPage = () => {
                             </div>
                             <div>
                                 <Image
-                                    src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                                    src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
                                     h={80}
                                     radius="md"
                                     alt="Norway"
@@ -39,7 +39,7 @@ const ProductPage = () => {
                             </div>
                             <div>
                                 <Image
-                                    src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                                    src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
                                     h={80}
                                     radius="md"
                                     alt="Norway"

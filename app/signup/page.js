@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { PasswordInput, Input } from '@mantine/core';
+import { PasswordInput, Input, Button } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 // import { MdOutlineDone, MdOutlineClose } from "react-icons/md";
 
@@ -58,7 +58,7 @@ const Signup = () => {
     return (
         <>
             <div className="py-4" />
-            <div className="mt-14 w-auto max-w-sm mx-auto overflow-hidden bg-white border rounded-lg">
+            <div className="mt-14 p-4 w-auto max-w-sm mx-auto overflow-hidden bg-white border rounded-lg">
                 <div className="px-6 py-4">
                     <h2 className="text-3xl font-bold text-center text-gray-700">Signup</h2>
                     <h3 className="mt-1 text-xl font-medium text-center text-gray-600">Create Account</h3>
@@ -104,14 +104,13 @@ const Signup = () => {
                                 required
                             />
                         </div>
-                        <button className="mt-4 w-full px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded hover:bg-gray-600 focus:outline-none" type="submit">Signup</button>
+                        <Button mt="md" fz="md" fullWidth color="rgba(238, 147, 34, 1)" type='submit'>Sign up</Button>
                     </form>
                 </div>
 
                 <div className="flex items-center justify-center py-4 text-center bg-gray-50">
                     <span className="text-sm text-gray-600">Already have an account? </span>
-                    <Link href={"/login"} legacyBehavior><a className="mx-2 text-sm font-bold text-blue-500 hover:underline">Login</a></Link>
-                </div>
+                    <Link href="/login" ><div className="mx-2 text-sm font-bold text-orange-400 hover:underline">Login</div></Link></div>
             </div>
         </>
     )
