@@ -1,10 +1,10 @@
 "use client"
 
-import { Image, Paper, Text, Button, Grid, Group } from '@mantine/core';
+import { Image, Paper, Text, Grid, Group } from '@mantine/core';
 
 const ProductPage = () => {
     return (<>
-            <div className="py-4" />
+        <div className="py-4" />
         <div className='mt-14 flex xl:flex-row flex-col gap-5 relative z-0 max-w-[1440px] mx-auto'>
             <Grid grow>
                 <Grid.Col span={6}>
@@ -62,9 +62,7 @@ const ProductPage = () => {
                         <Text justify="right" align="right" fw={600}>
                             Rs 0.0/day
                         </Text>
-                        <Button variant="filled" size="md" color="rgba(238, 147, 34, 1)">
-                            Add to Cart
-                        </Button>
+                        <button className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none">Add to Cart</button>
                     </Paper>
                 </Grid.Col>
             </Grid>

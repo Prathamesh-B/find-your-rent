@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { PasswordInput, Input, Button } from '@mantine/core';
+import { PasswordInput, Input } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 // import { MdOutlineDone, MdOutlineClose } from "react-icons/md";
 
@@ -13,7 +13,7 @@ const Signup = () => {
         if (localStorage.getItem('token')) {
             router.push("/");
         }
-    }, [])
+    })
     const [credentials, setCredentials] = useState({ username: "", email: "", password: "" })
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -67,7 +67,6 @@ const Signup = () => {
                         showNotification({
                             id: 'signin',
                             autoClose: false,
-                            disallowClose: true,
                             color: 'cyan',
                             title: "Loding",
                             message: 'Creating New Account',
@@ -104,7 +103,7 @@ const Signup = () => {
                                 required
                             />
                         </div>
-                        <Button mt="md" fz="md" fullWidth color="rgba(238, 147, 34, 1)" type='submit'>Sign up</Button>
+                    <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">Sign up</button>
                     </form>
                 </div>
 

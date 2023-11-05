@@ -1,6 +1,5 @@
 import Hero from './components/Hero/Hero'
 import ItemCard from './components/ItemCard/ItemCard'
-import { Button } from '@mantine/core';
 export default function Home() {
   return (
     <main className='overflow-hidden'>
@@ -13,7 +12,7 @@ export default function Home() {
         <ItemCard />
       </div>
       <div className='flex-center mt-8'>
-        <Button variant="filled" size="md" color="rgba(238, 147, 34, 1)">Show More</Button>
+        <button className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none">Show More</button>
       </div>
     </main>
   )

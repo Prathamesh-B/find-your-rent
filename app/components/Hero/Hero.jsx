@@ -2,7 +2,6 @@
 
 import "./Hero.css";
 import Image from "next/image";
-import { Button } from "@mantine/core";
 
 const Hero = () => {
   return (
@@ -14,15 +13,7 @@ const Hero = () => {
         <p className="hero__subtitle">
           Renting made easy for college students within campus
         </p>
-        <Button
-          className="mt-10"
-          variant="filled"
-          color="rgba(238, 147, 34, 1)"
-          size="md"
-          radius="md"
-        >
-          Explore
-        </Button>
+        <button className="mt-4 p-3 rounded-lg leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr hover:bg-oragne-secondary-fyr focus:outline-none">Explore</button>
       </div>
       <div className="hero__image-container">
         <div className="hero__image">

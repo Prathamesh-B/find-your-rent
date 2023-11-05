@@ -19,7 +19,7 @@ export async function POST(req) {
         if (!passwordCompare) {
             return NextResponse.json({ success: false, message: "Please try to login with correct credentials" }, { status: 403 })
         }
-        const authtoken = jwt.sign(existingUser.id, process.env.JWT_SECRET);
+        const authtoken = jwt.sign(existingUser, process.env.JWT_SECRET);
         return NextResponse.json({ success: true, authtoken }, { status: 200 })
     } catch (error) {
         console.log(error)

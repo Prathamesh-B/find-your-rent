@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Image, Text, Badge, Button, Group, Grid } from "@mantine/core";
+import { Card, Image, Text, Group, Grid } from "@mantine/core";
 import Link from "next/link";
 
 const ItemCard = () => {
@@ -40,15 +40,7 @@ const ItemCard = () => {
       <Text fw={400}>Owner Name</Text>
 
       <Link href="/product">
-        <Button
-          variant="light"
-          color="rgba(238, 147, 34, 1)"
-          fullWidth
-          mt="md"
-          radius="md"
-        >
-          View More
-        </Button>
+      <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none">View More</button>
       </Link>
     </Card>
   );
