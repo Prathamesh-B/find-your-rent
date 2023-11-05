@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { PasswordInput, Input } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
-// import { MdOutlineDone, MdOutlineClose } from "react-icons/md";
+import { BiSolidError } from "react-icons/bi";
+import { PiSignInBold } from "react-icons/pi";
 
 const Signup = () => {
     const router = useRouter()
@@ -32,7 +33,7 @@ const Signup = () => {
                 id: 'signin',
                 color: 'green',
                 autoClose: 5000,
-                // icon: <MdOutlineDone />,
+                icon: <PiSignInBold  />,
                 title: "Done",
                 message: 'Account Created Successfully',
                 loading: false,
@@ -44,7 +45,7 @@ const Signup = () => {
                 id: 'signin',
                 color: 'red',
                 autoClose: 5000,
-                // icon: <MdOutlineClose />,
+                icon: <BiSolidError />,
                 title: "Error",
                 message: 'Account with this email already exists',
                 loading: false,

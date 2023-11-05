@@ -5,8 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { PasswordInput, Input } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
-// import { MdOutlineClose } from "react-icons/md";
-// import { FaSignInAlt } from "react-icons/fa";
+import { BiLogIn, BiSolidError } from "react-icons/bi";
 
 const Login = () => {
     const router = useRouter()
@@ -36,7 +35,7 @@ const Login = () => {
                 id: 'signin',
                 color: 'green',
                 autoClose: 5000,
-                // icon: <FaSignInAlt />,
+                icon: <BiLogIn />,
                 title: "Logging",
                 message: 'Logged in Successfully',
                 loading: false,
@@ -48,7 +47,7 @@ const Login = () => {
                 id: 'signin',
                 color: 'red',
                 autoClose: 5000,
-                // icon: <MdOutlineClose />,
+                icon: <BiSolidError />,
                 title: "Error",
                 message: 'Invalid credentials',
                 loading: false,

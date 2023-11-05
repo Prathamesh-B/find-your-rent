@@ -1,22 +1,25 @@
 "use client"
 
+import { images } from "."
+import { Carousel } from '@mantine/carousel';
 import { Image, Paper, Text, Grid, Group } from '@mantine/core';
+
+const slides = images[0].url.map((item, index) => (
+    <Carousel.Slide key={index}>
+        <Image src={item.url} />
+    </Carousel.Slide>
+));
 
 const ProductPage = () => {
     return (<>
         <div className="py-4" />
-        <div className='mt-14 flex xl:flex-row flex-col gap-5 relative z-0 max-w-[1440px] mx-auto'>
-            <Grid grow>
+        <div className='mt-14 gap-5 relative z-0 max-w-6xl mx-auto'>
+            <Grid grow >
                 <Grid.Col span={6}>
-                    <Group justify="center" align="flex-start">
-                        <Image
-                            radius="md"
-                            src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
-                            h={400}
-                            p={10}
-                            w="auto"
-                            alt="Norway"
-                        />
+                    <Group justify="center" align="flex-center">
+                        <Carousel withIndicators loop className="w-auto max-w-md">
+                            {slides}
+                        </Carousel>
                     </Group>
 
                     <Grid.Col span={3}>
@@ -24,7 +27,7 @@ const ProductPage = () => {
                             <div>
                                 <Image
                                     src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
-                                    h={80}
+                                    h={60}
                                     radius="md"
                                     alt="Norway"
                                 />
@@ -32,7 +35,7 @@ const ProductPage = () => {
                             <div>
                                 <Image
                                     src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
-                                    h={80}
+                                    h={60}
                                     radius="md"
                                     alt="Norway"
                                 />
@@ -40,15 +43,13 @@ const ProductPage = () => {
                             <div>
                                 <Image
                                     src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
-                                    h={80}
+                                    h={60}
                                     radius="md"
                                     alt="Norway"
                                 />
                             </div>
                         </Group>
                     </Grid.Col>
-                </Grid.Col>
-                <Grid.Col span={6} >
                     <Paper shadow="xs" radius="xs" p="xl" my="md">
                         <Text justify="left" align="left" fw={600}>
                             Item_Name
