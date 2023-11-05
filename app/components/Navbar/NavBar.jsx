@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Avatar, Menu, rem } from "@mantine/core";
+import getToken from "@/app/lib/getToken";
 import { useRouter, useSearchParams } from "next/navigation";
 import { showNotification } from "@mantine/notifications";
 import { BiLogOut, BiBookAdd } from "react-icons/bi";
@@ -16,8 +17,8 @@ const Navbar = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    token ? setToken(true) : setToken(false);
-  }, [token, searchParams]);
+    token ? setToken(token) : setToken(null);
+  }, [searchParams]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -42,7 +43,12 @@ const Navbar = () => {
           <>
             <Menu shadow="md" width={200}>
               <Menu.Target>
-                <Avatar radius="xl" />
+                <Avatar
+                className="hover:opacity-80"
+                  radius="sm"
+                  src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${getToken(token).email}`}
+                  alt="avatar"
+                />
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Label>Application</Menu.Label>

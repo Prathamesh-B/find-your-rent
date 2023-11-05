@@ -33,7 +33,7 @@ const Signup = () => {
                 id: 'signin',
                 color: 'green',
                 autoClose: 5000,
-                icon: <PiSignInBold  />,
+                icon: <PiSignInBold />,
                 title: "Done",
                 message: 'Account Created Successfully',
                 loading: false,
@@ -63,6 +63,9 @@ const Signup = () => {
                 <div className="px-6 py-4">
                     <h2 className="text-3xl font-bold text-center text-gray-700">Signup</h2>
                     <h3 className="mt-1 text-xl font-medium text-center text-gray-600">Create Account</h3>
+                    <div className="shadow-lg mt-5 mx-auto" style={{ width: "5rem" }} >
+                        <img className="rounded-xl" src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${credentials.email}`} alt="profile" />
+                    </div>
                     <form onSubmit={(e) => {
                         handleSubmit(e);
                         showNotification({
@@ -75,7 +78,6 @@ const Signup = () => {
                         })
                     }} >
                         <div className="w-full mt-4">
-                            {/* <input className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" name="email" type="email" placeholder="Email Address" required onChange={onChange} /> */}
                             <Input
                                 variant="default"
                                 name="username"
@@ -84,7 +86,6 @@ const Signup = () => {
                                 onChange={onChange} />
                         </div>
                         <div className="w-full mt-4">
-                            {/* <input className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" name="email" type="email" placeholder="Email Address" required onChange={onChange} /> */}
                             <Input
                                 variant="default"
                                 name="email"
@@ -94,7 +95,6 @@ const Signup = () => {
                                 onChange={onChange} />
                         </div>
                         <div className="w-full mt-4">
-                            {/* <input className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" name="password" type="password" placeholder="Password" required minLength={3} maxLength={16} onChange={onChange} /> */}
                             <PasswordInput
                                 name="password"
                                 minLength={3}
@@ -104,7 +104,7 @@ const Signup = () => {
                                 required
                             />
                         </div>
-                    <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">Sign up</button>
+                        <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">Sign up</button>
                     </form>
                 </div>
 

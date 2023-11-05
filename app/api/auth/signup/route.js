@@ -23,7 +23,7 @@ export async function POST(req) {
                 password: hashedPassword
             }
         })
-        const authtoken = jwt.sign(newUser, process.env.JWT_SECRET);
+        const authtoken = jwt.sign(newUser, process.env.NEXT_PUBLIC_JWT_SECRET);
 
         return NextResponse.json({ success: true, authtoken }, { status: 201 })
     } catch (error) {

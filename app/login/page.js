@@ -54,7 +54,7 @@ const Login = () => {
             })
         }
     }
-    
+
     const onChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value })
     }
@@ -65,6 +65,9 @@ const Login = () => {
             <div className="px-6 py-4">
                 <h2 className="text-3xl font-bold text-center text-gray-700">Login</h2>
                 <h3 className="mt-1 text-xl font-medium text-center text-gray-600">Welcome Back</h3>
+                <div className="shadow-lg mt-5 mx-auto" style={{ width: "5rem" }} >
+                    <img className="rounded-xl" src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${credentials.email}`} alt="profile" />
+                </div>
                 <form onSubmit={(e) => {
                     handleSubmit(e);
                     showNotification({
@@ -101,7 +104,7 @@ const Login = () => {
             <div className="flex items-center justify-center py-4 text-center bg-gray-50">
                 <span className="text-sm text-gray-600">Don&apos;t have an account? </span>
                 <Link href="/signup" ><div className="mx-2 text-sm font-bold text-orange-400 hover:underline">Register</div></Link>
-                </div>
+            </div>
         </div>
     </>
     )
