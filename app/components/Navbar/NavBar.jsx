@@ -41,7 +41,7 @@ const Navbar = () => {
 
         {token ? (
           <>
-            <Menu shadow="md" width={200}>
+            <Menu shadow="md" width={200} position="bottom-end" withArrow arrowPosition="center">
               <Menu.Target>
                 <Avatar
                 className="hover:opacity-80"

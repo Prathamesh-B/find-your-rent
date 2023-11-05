@@ -32,7 +32,7 @@ const ItemAdd = () => {
             cleanNotifications()
             showNotification({
                 id: 'img',
-                color: 'orange',
+                color: 'gray',
                 autoClose: 5000,
                 icon: <BsFileImage />,
                 title: "Add Image",
@@ -79,6 +79,7 @@ const ItemAdd = () => {
                 loading: false,
             })
         }
+        setFiles([])
         e.target.reset();
     }
 
@@ -166,7 +167,7 @@ const ItemAdd = () => {
                             {previews}
                         </SimpleGrid>
                     </div>
-                    <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">Upload</button>
+                    <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">Add</button>
                 </form >
             </div >
         </>

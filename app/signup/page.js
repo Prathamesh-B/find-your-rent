@@ -63,8 +63,8 @@ const Signup = () => {
                 <div className="px-6 py-4">
                     <h2 className="text-3xl font-bold text-center text-gray-700">Signup</h2>
                     <h3 className="mt-1 text-xl font-medium text-center text-gray-600">Create Account</h3>
-                    <div className="shadow-lg mt-5 mx-auto" style={{ width: "5rem" }} >
-                        <img className="rounded-xl" src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${credentials.email}`} alt="profile" />
+                    <div className="mt-5 mx-auto" style={{ width: "5rem" }} >
+                        <img className="rounded-xl shadow-lg" src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${credentials.email}`} alt="profile" />
                     </div>
                     <form onSubmit={(e) => {
                         handleSubmit(e);
@@ -80,17 +80,17 @@ const Signup = () => {
                         <div className="w-full mt-4">
                             <Input
                                 variant="default"
-                                name="username"
-                                placeholder="User Name"
+                                name="email"
+                                type="email"
+                                placeholder="Email Address"
                                 required
                                 onChange={onChange} />
                         </div>
                         <div className="w-full mt-4">
                             <Input
                                 variant="default"
-                                name="email"
-                                type="email"
-                                placeholder="Email Address"
+                                name="username"
+                                placeholder="User Name"
                                 required
                                 onChange={onChange} />
                         </div>
