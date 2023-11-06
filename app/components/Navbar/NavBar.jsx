@@ -53,6 +53,7 @@ const Navbar = () => {
               <Menu.Dropdown>
                 <Menu.Label>Application</Menu.Label>
                 <Menu.Item
+                  className="hover:bg-slate-200"
                   onClick={() => {
                     router.push("/product/add");
                   }}

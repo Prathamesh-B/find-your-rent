@@ -5,8 +5,8 @@ export async function GET(req) {
     try {
         const page = req.url.split("page/")[1] - 1
         const result = await prisma.item.findMany({
-            skip: page > 0 ? page * 5 : 0,
-            take: 5,
+            skip: page > 0 ? page * 8 : 0,
+            take: 8,
         });
         return NextResponse.json({ success: true, result }, { status: 200 });
     } catch (error) {

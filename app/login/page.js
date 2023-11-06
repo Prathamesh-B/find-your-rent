@@ -28,7 +28,20 @@ const Login = () => {
             body: JSON.stringify({ email: credentials.email, password: credentials.password })
         });
         const json = await response.json()
-        if (json.success) {
+        console.log(response)
+        if(response.status === 422){
+            router.push("/signup")
+            updateNotification({
+                id: 'signin',
+                color: 'yellow',
+                autoClose: 5000,
+                icon: <BiSolidError />,
+                title: "Account Not Found",
+                message: 'Please signup first',
+                loading: false,
+            })
+        }
+        else if (json.success) {
             // Save the auth token and redirect
             localStorage.setItem('token', json.authtoken);
             updateNotification({
@@ -101,7 +114,7 @@ const Login = () => {
                     <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">Login</button>
                 </form>
             </div>
-            <div className="flex items-center justify-center py-4 text-center bg-gray-50">
+            <div className="flex items-center justify-center py-4 text-center bg-orange-50 rounded-sm">
                 <span className="text-sm text-gray-600">Don&apos;t have an account? </span>
                 <Link href="/signup" ><div className="mx-2 text-sm font-bold text-orange-400 hover:underline">Register</div></Link>
             </div>

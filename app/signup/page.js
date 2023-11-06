@@ -108,7 +108,7 @@ const Signup = () => {
                     </form>
                 </div>
 
-                <div className="flex items-center justify-center py-4 text-center bg-gray-50">
+                <div className="flex items-center justify-center py-4 text-center bg-orange-50 rounded-sm">
                     <span className="text-sm text-gray-600">Already have an account? </span>
                     <Link href="/login" ><div className="mx-2 text-sm font-bold text-orange-400 hover:underline">Login</div></Link></div>
             </div>

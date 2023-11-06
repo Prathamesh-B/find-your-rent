@@ -12,7 +12,7 @@ export async function POST(req) {
         })
 
         if (!existingUser) {
-            return NextResponse.json({ success: false, message: "Please try to login with correct credentials" }, { status: 422 })
+            return NextResponse.json({ success: false, message: "User with this email doesn't exist" }, { status: 422 })
         }
         const userPassword = existingUser.password;
         const passwordCompare = await bcrypt.compare(password, userPassword);

@@ -40,7 +40,7 @@ const ItemCard = (props) => {
         {description}
       </Text>
 
-      <Text fw={400}>{ownerId}</Text>
+      <Text fw={400}>{description}</Text>
 
       <Link href="/product">
         <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none">
