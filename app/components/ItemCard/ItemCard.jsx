@@ -3,21 +3,24 @@
 import { Card, Image, Text, Group, Grid } from "@mantine/core";
 import Link from "next/link";
 
-const ItemCard = () => {
+const ItemCard = (props) => {
+  let { title, description, price, ownerId, photos } = props;
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
         <Image
-          src="https://png.pngtree.com/png-vector/20230318/ourmid/pngtree-the-books-clipart-vector-png-image_6653533.png"
-          height={50}
-          alt="Norway"
+          className="block ml-auto mr-auto"
+          src={photos}
+          h={180}
+          w="auto"
+          fallbackSrc="https://placehold.co/400x200?text=No%20Image"
         />
       </Card.Section>
 
       <Grid mt="md">
         <Grid.Col span={6}>
           <Text justify="left" align="left" fw={500}>
-            Item Name
+            {title}
           </Text>
         </Grid.Col>
         <div className="col-span-2"></div>
@@ -26,7 +29,7 @@ const ItemCard = () => {
           <Group justify="right" align="right">
             <p className="flex text-[32px]">
               <span className="self-start text-[14px] ">Rent: Rs</span>
-              0.0
+              {price}
               <span className="self-end text-[14px] ">/day</span>
             </p>
           </Group>
@@ -34,13 +37,15 @@ const ItemCard = () => {
       </Grid>
 
       <Text size="sm" c="dimmed" mt="xs" mb="xs">
-        Description of the Item(in Brief)
+        {description}
       </Text>
 
-      <Text fw={400}>Owner Name</Text>
+      <Text fw={400}>{ownerId}</Text>
 
       <Link href="/product">
-      <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none">View More</button>
+        <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none">
+          View More
+        </button>
       </Link>
     </Card>
   );
