@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 import { NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
-import prisma from '../../../lib/db'
+import prisma from '@/app/lib/db'
 
 export async function POST(req) {
     try {
@@ -10,11 +10,9 @@ export async function POST(req) {
         const existingUserByEmail = await prisma.user.findUnique({
             where: { email: email }
         })
-
         if (existingUserByEmail) {
             return NextResponse.json({ success: false, message: "Account with this email already exists" }, { status: 409 })
         }
-
         const hashedPassword = await hash(password, 10);
         const newUser = await prisma.user.create({
             data: {
@@ -24,9 +22,10 @@ export async function POST(req) {
             }
         })
         const authtoken = jwt.sign(newUser, process.env.NEXT_PUBLIC_JWT_SECRET);
-
         return NextResponse.json({ success: true, authtoken }, { status: 201 })
     } catch (error) {
         return NextResponse.json({ success: false, message: "Something went wrong!" }, { status: 500 })
+    } finally {
+        await prisma.$disconnect();
     }
 }

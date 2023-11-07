@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 import { NextResponse } from 'next/server';
 const bcrypt = require("bcryptjs");
-import prisma from '../../../lib/db'
+import prisma from '@/app/lib/db'
 
 export async function POST(req) {
     try {
@@ -10,7 +10,6 @@ export async function POST(req) {
         const existingUser = await prisma.user.findUnique({
             where: { email: email }
         })
-
         if (!existingUser) {
             return NextResponse.json({ success: false, message: "User with this email doesn't exist" }, { status: 422 })
         }
@@ -24,5 +23,7 @@ export async function POST(req) {
     } catch (error) {
         console.log(error)
         return NextResponse.json({ success: false, message: "Something went wrong!" }, { status: 500 })
+    } finally {
+        await prisma.$disconnect();
     }
 }

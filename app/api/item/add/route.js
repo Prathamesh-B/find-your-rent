@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 import { NextResponse } from 'next/server';
-import prisma from '../../../lib/db'
+import prisma from '@/app/lib/db'
 
 export async function POST(req) {
     try {
@@ -23,11 +23,10 @@ export async function POST(req) {
         })
         return NextResponse.json({ success: true, newItem }, { status: 201 })
     } catch (error) {
-        // console.log(error)
-        // if (error instanceof jwt.JsonWebTokenError){
-        //     return NextResponse.json({ success: false, message: "JsonWebTokenError: invalid signature!" }, { status: 500 })
-        // }
         console.log(error)
+        if (error instanceof jwt.JsonWebTokenError){
+            return NextResponse.json({ success: false, message: "JsonWebTokenError: invalid signature!" }, { status: 401 })
+        }
         return NextResponse.json({ success: false, message: "Something went wrong!" }, { status: 500 })
     }
 }
