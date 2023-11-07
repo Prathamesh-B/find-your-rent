@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ItemCard from "../components/ItemCard/ItemCard";
 
-const userItems = () => {
+const UserItems  = () => {
     const [items, setItems] = useState([]);
     const [skip, setSkip] = useState(1);
     const [hasMoreData, setHasMoreData] = useState(true);
@@ -70,4 +70,4 @@ const userItems = () => {
     )
 }
 
-export default userItems
+export default UserItems 
