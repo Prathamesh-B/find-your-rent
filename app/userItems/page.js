@@ -2,22 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Modal, Textarea, Input } from '@mantine/core';
+import { Modal, Textarea, Input, Loader } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
+import InfiniteScroll from "react-infinite-scroll-component";
 import ItemCard from "../components/ItemCard/UserItemCard";
 import { BiSolidError, BiSolidPencil } from "react-icons/bi";
 import { MdFileDownloadDone } from "react-icons/md";
+import Spinner from "../components/Spinner/Spinner";
 
 const UserItems = () => {
     const [opened, setOpened] = useState(false);
-    const [modal, setModal] = useState({ id: -1, title: "", description: "", price: 0 })
+    const [modal, setModal] = useState({ id: -1, title: "", description: "", price: 0 });
     const [items, setItems] = useState([]);
     const [skip, setSkip] = useState(1);
     const [hasMoreData, setHasMoreData] = useState(true);
     const [shouldRunEffect, setShouldRunEffect] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('token');
         if (!shouldRunEffect) {
             setShouldRunEffect(true);
             return;
@@ -51,8 +53,8 @@ const UserItems = () => {
     };
 
     const handleDeleteItem = (authToken, itemId) => {
-        handleDelete(authToken, itemId)
-    }
+        handleDelete(authToken, itemId);
+    };
 
     const handleDelete = async (authToken, id) => {
         const response = await fetch('/api/item/delete', {
@@ -62,7 +64,7 @@ const UserItems = () => {
             },
             body: JSON.stringify({ id, authToken })
         });
-        const json = await response.json()
+        const json = await response.json();
         if (json.success) {
             // Remove the item from the local items array
             setItems(items.filter((item) => item.id !== id));
@@ -74,7 +76,7 @@ const UserItems = () => {
                 title: "Delete",
                 message: 'Note deleted Successfully',
                 loading: false,
-            })
+            });
         } else {
             updateNotification({
                 id: 'delete',
@@ -84,9 +86,9 @@ const UserItems = () => {
                 title: "Error",
                 message: 'Server error',
                 loading: false,
-            })
+            });
         }
-    }
+    };
 
     const handleUpdate = async (id, title, description, price, authToken) => {
         const response = await fetch('/api/item/update', {
@@ -96,7 +98,7 @@ const UserItems = () => {
             },
             body: JSON.stringify({ id, title, description, price, authToken })
         });
-        const json = await response.json()
+        const json = await response.json();
         if (json.success) {
             //update only the modified item in the items
             const updatedItemIndex = items.findIndex((item) => item.id === id);
@@ -110,7 +112,7 @@ const UserItems = () => {
                 title: "Update",
                 message: 'Item updated Successfully',
                 loading: false,
-            })
+            });
 
         } else {
             updateNotification({
@@ -121,10 +123,10 @@ const UserItems = () => {
                 title: "Error",
                 message: 'Server error',
                 loading: false,
-            })
+            });
         }
-        setOpened(false)
-    }
+        setOpened(false);
+    };
 
     return (
         <div className="pt-8 padding-x">
@@ -138,9 +140,9 @@ const UserItems = () => {
                 title="Edit"
             >
                 <form onSubmit={(e) => {
-                    e.preventDefault()
-                    let token = localStorage.getItem('token')
-                    handleUpdate(modal.id, modal.title, modal.description, modal.price, token)
+                    e.preventDefault();
+                    let token = localStorage.getItem('token');
+                    handleUpdate(modal.id, modal.title, modal.description, modal.price, token);
                     showNotification({
                         id: 'update',
                         autoClose: false,
@@ -148,7 +150,7 @@ const UserItems = () => {
                         title: "Updating Item",
                         message: 'Waiting for server',
                         loading: true,
-                    })
+                    });
                 }}>
                     <div className="w-full mt-4">
                         <Input
@@ -190,42 +192,40 @@ const UserItems = () => {
                 </form>
 
             </Modal>
-            <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
-                {items?.map((item) => (
-                    <div className="col-md-4" key={uuidv4()}>
-                        <ItemCard
-                            onOpenModal={(E) => handleOpenModal(item.id, item.title, item.description, item.price)}
-                            onDeleteItem={(E) => {
-                                handleDeleteItem(E, item.id)
-                                showNotification({
-                                    id: 'delete',
-                                    autoClose: false,
-                                    color: 'cyan',
-                                    title: "Deleting Note",
-                                    message: 'Waiting for server',
-                                    loading: true,
-                                })
-                            }}
-                            id={item.id}
-                            title={item.title}
-                            price={item.price}
-                            description={item.description}
-                            photos={item.photos[0]}
-                        />
-                    </div>
-                ))}
-            </div>
-            {hasMoreData && (
-                <div className="flex-center m-4">
-                    <button
-                        onClick={loadMore}
-                        className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none">
-                        Show More
-                    </button>
+            <InfiniteScroll
+                dataLength={items.length}
+                next={loadMore}
+                hasMore={hasMoreData}
+                loader={<Spinner />}
+            >
+                <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
+                    {items?.map((item) => (
+                        <div className="col-md-4" key={uuidv4()}>
+                            <ItemCard
+                                onOpenModal={(E) => handleOpenModal(item.id, item.title, item.description, item.price)}
+                                onDeleteItem={(E) => {
+                                    handleDeleteItem(E, item.id);
+                                    showNotification({
+                                        id: 'delete',
+                                        autoClose: false,
+                                        color: 'cyan',
+                                        title: "Deleting Note",
+                                        message: 'Waiting for server',
+                                        loading: true,
+                                    });
+                                }}
+                                id={item.id}
+                                title={item.title}
+                                price={item.price}
+                                description={item.description}
+                                photos={item.photos[0]}
+                            />
+                        </div>
+                    ))}
                 </div>
-            )}
+            </InfiniteScroll>
         </div>
-    )
-}
+    );
+};
 
-export default UserItems 
+export default UserItems;
