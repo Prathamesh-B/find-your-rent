@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ItemCard from "../components/ItemCard/ItemCard";
 
-const UserItems  = () => {
+const UserItems = () => {
     const [items, setItems] = useState([]);
     const [skip, setSkip] = useState(1);
     const [hasMoreData, setHasMoreData] = useState(true);
@@ -38,12 +38,11 @@ const UserItems  = () => {
         setSkip((oldSkip) => oldSkip + 1);
     };
     return (
-        <>
-            <div className="pt-8" />
-            <p className="2xl:text-[30px] sm:text-[30px] text-[30px] font-semibold pt-10 px-7">
+        <div className="pt-8 padding-x">
+            <p className="2xl:text-[30px] sm:text-[30px] text-[30px] font-semibold pt-10">
                 My Items:
             </p>
-            <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-10 px-7">
+            <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
                 {items?.map((item) => (
                     <div className="col-md-4" key={uuidv4()}>
                         <ItemCard
@@ -66,7 +65,7 @@ const UserItems  = () => {
                     </button>
                 </div>
             )}
-        </>
+        </div>
     )
 }
 

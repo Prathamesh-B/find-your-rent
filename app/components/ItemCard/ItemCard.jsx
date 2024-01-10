@@ -11,6 +11,7 @@ const ItemCard = (props) => {
         <Image
           className="block ml-auto mr-auto"
           src={photos}
+          alt={ownerId}
           h={180}
           w="auto"
           fallbackSrc="https://placehold.co/400x200?text=No%20Image"

@@ -33,9 +33,8 @@ const Items = () => {
   };
 
   return (
-    <>
-      <div className="pt-8" />
-      <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-10 px-7">
+    <div className="pt-8 padding-x">
+      <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-10">
         {items?.map((item) => (
           <div className="col-md-4" key={uuidv4()}>
             <ItemCard
@@ -58,7 +57,7 @@ const Items = () => {
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
