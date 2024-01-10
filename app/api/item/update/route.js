@@ -14,7 +14,7 @@ export async function POST(req) {
             data: {
                 title: title,
                 description: description,
-                price: price,
+                price: parseInt(price),
                 photos: photos
             },
         })
