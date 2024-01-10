@@ -5,11 +5,11 @@ import prisma from '@/app/lib/db'
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { itemID, authToken } = body;
+        const { id, authToken } = body;
         jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
         const deletedItem = await prisma.item.delete({
             where: {
-                id: parseInt(itemID),
+                id: parseInt(id),
             }
         })
         return NextResponse.json({ success: true, deletedItem, message: "Item Deleted" }, { status: 200 })

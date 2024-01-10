@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Modal, Textarea, Input } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import ItemCard from "../components/ItemCard/UserItemCard";
-import { BiSolidError, BiSolidPencil  } from "react-icons/bi";
+import { BiSolidError, BiSolidPencil } from "react-icons/bi";
+import { MdFileDownloadDone } from "react-icons/md";
 
 const UserItems = () => {
     const [opened, setOpened] = useState(false);
@@ -49,6 +50,44 @@ const UserItems = () => {
         setOpened(true);
     };
 
+    const handleDeleteItem = (authToken, itemId) => {
+        handleDelete(authToken, itemId)
+    }
+
+    const handleDelete = async (authToken, id) => {
+        const response = await fetch('/api/item/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id, authToken })
+        });
+        const json = await response.json()
+        if (json.success) {
+            // Remove the item from the local items array
+            setItems(items.filter((item) => item.id !== id));
+            updateNotification({
+                id: 'delete',
+                color: 'green',
+                autoClose: 5000,
+                icon: <MdFileDownloadDone />,
+                title: "Delete",
+                message: 'Note deleted Successfully',
+                loading: false,
+            })
+        } else {
+            updateNotification({
+                id: 'delete',
+                color: 'red',
+                autoClose: 5000,
+                icon: <BiSolidError />,
+                title: "Error",
+                message: 'Server error',
+                loading: false,
+            })
+        }
+    }
+
     const handleUpdate = async (id, title, description, price, authToken) => {
         const response = await fetch('/api/item/update', {
             method: 'POST',
@@ -67,7 +106,7 @@ const UserItems = () => {
                 id: 'update',
                 color: 'green',
                 autoClose: 5000,
-                icon: <BiSolidPencil  />,
+                icon: <BiSolidPencil />,
                 title: "Update",
                 message: 'Item updated Successfully',
                 loading: false,
@@ -98,41 +137,8 @@ const UserItems = () => {
                 onClose={() => { setOpened(false) }}
                 title="Edit"
             >
-                <div className="w-full mt-4">
-                    <Input
-                        value={modal.title}
-                        variant="default"
-                        name="title"
-                        placeholder="Title"
-                        required
-                        onChange={(e) => setModal({ "id": modal.id, "title": e.target.value, "description": modal.description, "price": modal.price })}
-                    />
-                </div>
-                <div className="w-full mt-4">
-                    <Textarea
-                        value={modal.description}
-                        autosize
-                        maxRows={6}
-                        variant="default"
-                        name="description"
-                        placeholder="Description"
-                        required
-                        onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": e.target.value, "price": modal.price })}
-                    />
-                </div>
-                <div className="w-full mt-4">
-                    <Input
-                        value={modal.price}
-                        variant="default"
-                        name="price"
-                        type="number"
-                        placeholder="Price"
-                        required
-                        onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": modal.description, "price": e.target.value })}
-                    />
-                </div>
-
-                <button onClick={() => {
+                <form onSubmit={(e) => {
+                    e.preventDefault()
                     let token = localStorage.getItem('token')
                     handleUpdate(modal.id, modal.title, modal.description, modal.price, token)
                     showNotification({
@@ -143,8 +149,45 @@ const UserItems = () => {
                         message: 'Waiting for server',
                         loading: true,
                     })
-                }}
-                    className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">Done</button>
+                }}>
+                    <div className="w-full mt-4">
+                        <Input
+                            value={modal.title}
+                            variant="default"
+                            name="title"
+                            placeholder="Title"
+                            required
+                            onChange={(e) => setModal({ "id": modal.id, "title": e.target.value, "description": modal.description, "price": modal.price })}
+                        />
+                    </div>
+                    <div className="w-full mt-4">
+                        <Textarea
+                            value={modal.description}
+                            autosize
+                            maxRows={6}
+                            variant="default"
+                            name="description"
+                            placeholder="Description"
+                            required
+                            onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": e.target.value, "price": modal.price })}
+                        />
+                    </div>
+                    <div className="w-full mt-4">
+                        <Input
+                            value={modal.price}
+                            variant="default"
+                            name="price"
+                            type="number"
+                            placeholder="Price"
+                            required
+                            onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": modal.description, "price": e.target.value })}
+                        />
+                    </div>
+
+                    <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">
+                        Done
+                    </button>
+                </form>
 
             </Modal>
             <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
@@ -152,6 +195,17 @@ const UserItems = () => {
                     <div className="col-md-4" key={uuidv4()}>
                         <ItemCard
                             onOpenModal={(E) => handleOpenModal(item.id, item.title, item.description, item.price)}
+                            onDeleteItem={(E) => {
+                                handleDeleteItem(E, item.id)
+                                showNotification({
+                                    id: 'delete',
+                                    autoClose: false,
+                                    color: 'cyan',
+                                    title: "Deleting Note",
+                                    message: 'Waiting for server',
+                                    loading: true,
+                                })
+                            }}
                             id={item.id}
                             title={item.title}
                             price={item.price}
