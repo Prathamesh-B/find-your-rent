@@ -4,14 +4,14 @@ import { Card, Image, Text, Group, Grid } from "@mantine/core";
 import Link from "next/link";
 
 const ItemCard = (props) => {
-  let { title, description, price, ownerId, photos } = props;
+  let { title, description, price, id, photos } = props;
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
         <Image
           className="block ml-auto mr-auto"
           src={photos}
-          alt={ownerId}
+          alt={id}
           h={180}
           w="auto"
           fallbackSrc="https://placehold.co/400x200?text=No%20Image"
@@ -41,7 +41,7 @@ const ItemCard = (props) => {
         {description}
       </Text>
 
-      <Link href="/product">
+      <Link href={`/product/${id}`}>
         <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none">
           View More
         </button>
