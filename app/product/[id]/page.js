@@ -76,7 +76,7 @@ export default function Page({ params }) {
                             </Group>
                         </Grid.Col>
 
-                        <Paper shadow="xs" radius="xs" p="xl" my="md">
+                        <Paper radius="xs" p="xl" my="md">
                             <Text justify="left" align="left" fw={600}>
                                 {itemData.title}
                             </Text>
@@ -93,7 +93,7 @@ export default function Page({ params }) {
                                 <button
                                     className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none"
                                 >
-                                    Add to Cart
+                                    Rent
                                 </button>
                             )}
                         </Paper>

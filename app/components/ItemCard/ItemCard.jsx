@@ -5,6 +5,9 @@ import Link from "next/link";
 
 const ItemCard = (props) => {
   let { title, description, price, id, photos } = props;
+  if(description.length>36){
+    description = description.slice(0, 33) + "...";
+  }
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>

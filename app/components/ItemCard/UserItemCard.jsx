@@ -5,6 +5,9 @@ import Link from "next/link";
 
 const ItemCard = (props) => {
   let { title, description, price, id, photos, onOpenModal, onDeleteItem } = props;
+  if(description.length>36){
+    description = description.slice(0, 33) + "...";
+  }
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
@@ -20,9 +23,11 @@ const ItemCard = (props) => {
 
       <Grid mt="md">
         <Grid.Col span={6}>
+          <Link href={`/product/${id}`}>
           <Text justify="left" align="left" fw={500}>
             {title}
           </Text>
+          </Link>
         </Grid.Col>
         <div className="col-span-2"></div>
 

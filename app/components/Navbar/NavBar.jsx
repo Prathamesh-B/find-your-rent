@@ -30,7 +30,7 @@ const Navbar = () => {
   return (
     <header className="w-full absolute z-10">
       <nav className="max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4">
-        <Link href="/" className="flex justify-center items-center">
+        <Link href="/items" className="flex justify-center items-center">
           <Image
             src="/nav-icon.svg"
             alt="Logo"
@@ -52,7 +52,7 @@ const Navbar = () => {
                 />
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Label>Application</Menu.Label>
+                <Menu.Label>Menu</Menu.Label>
                 <Menu.Item
                   className="hover:bg-slate-200"
                   onClick={() => {
