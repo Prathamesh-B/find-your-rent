@@ -57,8 +57,7 @@ const ItemCard = (props) => {
         </button>
         <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-red-700 transition-colors duration-200 transform bg-red-100 rounded focus:outline-none"
         onClick={() => {
-          let token = localStorage.getItem('token')
-          onDeleteItem(token);
+          onDeleteItem();
         }}
         >
           Delete

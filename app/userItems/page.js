@@ -14,6 +14,8 @@ const UserItems = () => {
     const [opened, setOpened] = useState(false);
     const [modal, setModal] = useState({ id: -1, title: "", description: "", price: 0 });
     const [items, setItems] = useState([]);
+    const [deleteConfirmationModal, setDeleteConfirmationModal] = useState(false);
+    const [deleteItemId, setDeleteItemId] = useState(null);
     const [skip, setSkip] = useState(1);
     const [hasMoreData, setHasMoreData] = useState(true);
     const [shouldRunEffect, setShouldRunEffect] = useState(false);
@@ -52,8 +54,15 @@ const UserItems = () => {
         setOpened(true);
     };
 
-    const handleDeleteItem = (authToken, itemId) => {
-        handleDelete(authToken, itemId);
+    const handleDeleteItem = (itemId) => {
+        setDeleteItemId(itemId);
+        setDeleteConfirmationModal(true);
+    };
+
+    const handleConfirmDelete = () => {
+        const token = localStorage.getItem('token');
+        handleDelete(token, deleteItemId);
+        setDeleteConfirmationModal(false);
     };
 
     const handleDelete = async (authToken, id) => {
@@ -133,90 +142,93 @@ const UserItems = () => {
             <p className="2xl:text-[30px] sm:text-[30px] text-[30px] font-semibold pt-10">
                 My Items:
             </p>
-            {items.length === 0 ? (
-                <p className="text-center mt-4">You have no items yet.</p>
-            ) : (
-                <><Modal
-                    centered
-                    opened={opened}
-                    onClose={() => { setOpened(false) }}
-                    title="Edit"
-                >
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        let token = localStorage.getItem('token');
-                        handleUpdate(modal.id, modal.title, modal.description, modal.price, token);
+            <Modal centered opened={opened} onClose={() => { setOpened(false) }} title="Edit">
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    let token = localStorage.getItem('token');
+                    handleUpdate(modal.id, modal.title, modal.description, modal.price, token);
+                    showNotification({
+                        id: 'update',
+                        autoClose: false,
+                        color: 'cyan',
+                        title: "Updating Item",
+                        message: 'Waiting for server',
+                        loading: true,
+                    });
+                }}>
+                    <div className="w-full mt-4">
+                        <Input
+                            value={modal.title}
+                            variant="default"
+                            name="title"
+                            placeholder="Title"
+                            required
+                            onChange={(e) => setModal({ "id": modal.id, "title": e.target.value, "description": modal.description, "price": modal.price })}
+                        />
+                    </div>
+                    <div className="w-full mt-4">
+                        <Textarea
+                            value={modal.description}
+                            autosize
+                            maxRows={6}
+                            variant="default"
+                            name="description"
+                            placeholder="Description"
+                            required
+                            onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": e.target.value, "price": modal.price })}
+                        />
+                    </div>
+                    <div className="w-full mt-4">
+                        <Input
+                            value={modal.price}
+                            variant="default"
+                            name="price"
+                            type="number"
+                            placeholder="Price"
+                            required
+                            onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": modal.description, "price": e.target.value })}
+                        />
+                    </div>
+                    <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">
+                        Done
+                    </button>
+                </form>
+            </Modal>
+            <Modal centered opened={deleteConfirmationModal} onClose={() => setDeleteConfirmationModal(false)} title="Confirm Delete">
+                <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+                <button
+                    className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-red-500 rounded hover:bg-red-600 focus:outline-none"
+                    onClick={() => {
+                        handleConfirmDelete();
                         showNotification({
-                            id: 'update',
+                            id: 'delete',
                             autoClose: false,
                             color: 'cyan',
-                            title: "Updating Item",
+                            title: "Deleting Item",
                             message: 'Waiting for server',
                             loading: true,
                         });
-                    }}>
-                        <div className="w-full mt-4">
-                            <Input
-                                value={modal.title}
-                                variant="default"
-                                name="title"
-                                placeholder="Title"
-                                required
-                                onChange={(e) => setModal({ "id": modal.id, "title": e.target.value, "description": modal.description, "price": modal.price })}
-                            />
-                        </div>
-                        <div className="w-full mt-4">
-                            <Textarea
-                                value={modal.description}
-                                autosize
-                                maxRows={6}
-                                variant="default"
-                                name="description"
-                                placeholder="Description"
-                                required
-                                onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": e.target.value, "price": modal.price })}
-                            />
-                        </div>
-                        <div className="w-full mt-4">
-                            <Input
-                                value={modal.price}
-                                variant="default"
-                                name="price"
-                                type="number"
-                                placeholder="Price"
-                                required
-                                onChange={(e) => setModal({ "id": modal.id, "title": modal.title, "description": modal.description, "price": e.target.value })}
-                            />
-                        </div>
-
-                        <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none" type="submit">
-                            Done
-                        </button>
-                    </form>
-
-                </Modal>
-                    <InfiniteScroll
-                        dataLength={items.length}
-                        next={loadMore}
-                        hasMore={hasMoreData}
-                        loader={<Spinner />}
-                    >
+                    }}
+                >
+                    Confirm Delete
+                </button>
+            </Modal>
+            <InfiniteScroll
+                dataLength={items.length}
+                next={loadMore}
+                hasMore={hasMoreData}
+                loader={<Spinner />}
+            >
+                {items.length === 0 ? (
+                    <p className="text-center mt-4">You have no items yet.</p>
+                ) : (
+                    <>
                         <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
                             {items?.map((item) => (
                                 <div className="col-md-4" key={uuidv4()}>
                                     <ItemCard
-                                        onOpenModal={(E) => handleOpenModal(item.id, item.title, item.description, item.price)}
-                                        onDeleteItem={(E) => {
-                                            handleDeleteItem(E, item.id);
-                                            showNotification({
-                                                id: 'delete',
-                                                autoClose: false,
-                                                color: 'cyan',
-                                                title: "Deleting Item",
-                                                message: 'Waiting for server',
-                                                loading: true,
-                                            });
-                                        }}
+                                        onOpenModal={() => handleOpenModal(item.id, item.title, item.description, item.price)}
+                                        onDeleteItem={() => { handleDeleteItem(item.id) }}
                                         id={item.id}
                                         title={item.title}
                                         price={item.price}
@@ -226,8 +238,9 @@ const UserItems = () => {
                                 </div>
                             ))}
                         </div>
-                    </InfiniteScroll></>
-            )}
+                    </>)}
+            </InfiniteScroll>
+
         </div>
     );
 };
