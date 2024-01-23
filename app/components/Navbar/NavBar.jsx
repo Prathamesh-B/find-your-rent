@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { showNotification } from "@mantine/notifications";
 import { BiLogOut, BiBookAdd } from "react-icons/bi";
 import { BsFillCartFill } from "react-icons/bs";
+import { BsEnvelopePaperFill } from "react-icons/bs";
 
 const Navbar = () => {
   const router = useRouter();
@@ -67,6 +68,17 @@ const Navbar = () => {
                 <Menu.Item
                   className="hover:bg-slate-200"
                   onClick={() => {
+                    router.push("/rents");
+                  }}
+                  leftSection={
+                    <BiBookAdd style={{ width: rem(14), height: rem(14) }} />
+                  }
+                >
+                  My Rents
+                </Menu.Item>
+                <Menu.Item
+                  className="hover:bg-slate-200"
+                  onClick={() => {
                     router.push("/userItems");
                   }}
                   leftSection={
@@ -74,6 +86,17 @@ const Navbar = () => {
                   }
                 >
                   My Items
+                </Menu.Item>
+                <Menu.Item
+                  className="hover:bg-slate-200"
+                  onClick={() => {
+                    router.push("/requests");
+                  }}
+                  leftSection={
+                    <BsEnvelopePaperFill style={{ width: rem(14), height: rem(14) }} />
+                  }
+                >
+                  Rent Requests
                 </Menu.Item>
                 <Menu.Item
                   className="hover:bg-red-100"
