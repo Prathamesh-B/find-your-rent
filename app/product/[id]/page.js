@@ -2,13 +2,14 @@
 import { useRouter } from 'next/navigation';
 import Spinner from '@/app/components/Spinner/Spinner';
 import { Carousel } from '@mantine/carousel';
-import { showNotification } from '@mantine/notifications';
-import { Image, Paper, Text, Grid, Group } from '@mantine/core';
+import { showNotification, updateNotification } from '@mantine/notifications';
+import { Image, Paper, Text, Grid, Group, Modal } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { BiSolidError } from 'react-icons/bi';
 
 export default function Page({ params }) {
     const router = useRouter()
+    const [opened, setOpened] = useState(false);
     const [shouldRunEffect, setShouldRunEffect] = useState(false);
     const [itemData, setItemData] = useState(null);
 
@@ -18,11 +19,11 @@ export default function Page({ params }) {
             return;
         }
 
-        const fetchItems = async () => {
+        const fetchItemDetails = async () => {
             try {
                 const response = await fetch(`/api/item/getItem/${params.id}`);
                 const json = await response.json();
-                if(json.success){
+                if (json.success) {
                     setItemData(json.item);
                 } else {
                     showNotification({
@@ -41,11 +42,44 @@ export default function Page({ params }) {
             }
         };
 
-        fetchItems();
+        fetchItemDetails();
     }, [router, params.id, shouldRunEffect]);
 
+    const handleSendRequest = async (authToken, itemId) => {
+        const response = await fetch('/api/item/rent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ itemId, authToken })
+        });
+        const json = await response.json();
+        if (json.success) {
+            // Update the itemData state to mark it as not available
+            setItemData(prevItemData => ({ ...prevItemData, isAvailable: false }));
+            updateNotification({
+                id: 'rent',
+                color: 'green',
+                autoClose: 5000,
+                title: "Send",
+                message: 'Rent Request Send Successfully',
+                loading: false,
+            });
+        } else {
+            updateNotification({
+                id: 'rent',
+                color: 'red',
+                autoClose: 5000,
+                icon: <BiSolidError />,
+                title: "Error",
+                message: 'Server error',
+                loading: false,
+            });
+        }
+    };
+
     if (!itemData) {
-        return <div className='pt-14'><Spinner/></div>;
+        return <div className='pt-14'><Spinner /></div>;
     }
 
     const slides = itemData.photos.map((photo, index) => (
@@ -56,6 +90,24 @@ export default function Page({ params }) {
 
     return (
         <div>
+            <Modal centered opened={opened} onClose={() => setOpened(false)} title="Send Request">
+                <p>You want to send a request to the owner?</p>
+                <button
+                    className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none"
+                    onClick={() => {
+                        handleSendRequest(localStorage.getItem('token'), itemData.id);
+                        showNotification({
+                            id: 'rent',
+                            autoClose: false,
+                            color: 'cyan',
+                            title: "Sending",
+                            message: 'Waiting for server',
+                            loading: true,
+                        });
+                        setOpened(false);
+                    }}
+                >Send</button>
+            </Modal>
             <div className="py-4" />
             <div className="mt-14 gap-5 relative z-0 max-w-6xl mx-auto">
                 <Grid grow>
@@ -89,13 +141,18 @@ export default function Page({ params }) {
                             <Text justify="right" align="right" fw={600}>
                                 Rs {itemData.price}/day
                             </Text>
-                            {itemData.isAvailable && (
+                            {itemData.isAvailable ? (
                                 <button
+                                    onClick={() => setOpened(true)}
                                     className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none"
                                 >
                                     Rent
                                 </button>
-                            )}
+                            ) : <button
+                                className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-slate-700 rounded hover:bg-slate-600 focus:outline-none"
+                            >
+                                Not Available
+                            </button>}
                         </Paper>
                     </Grid.Col>
                 </Grid>

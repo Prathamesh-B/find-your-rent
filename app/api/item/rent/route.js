@@ -7,7 +7,6 @@ export async function POST(req) {
         const body = await req.json();
         const { itemId, startDate, endDate, authToken } = body;
         const UserInfo = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
-        console.log(UserInfo,itemId,authToken)
         // Check if the item is available
         const item = await prisma.item.findUnique({
             where: { id: parseInt(itemId) },
