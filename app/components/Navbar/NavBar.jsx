@@ -7,8 +7,8 @@ import { Avatar, Menu, rem } from "@mantine/core";
 import getToken from "@/app/lib/getToken";
 import { useRouter, useSearchParams } from "next/navigation";
 import { showNotification } from "@mantine/notifications";
-import { BiLogOut, BiBookAdd } from "react-icons/bi";
-import { BsFillCartFill } from "react-icons/bs";
+import { BiLogOut } from "react-icons/bi";
+import {LuShoppingBag, LuShoppingCart, LuLogOut, LuPackagePlus } from 'react-icons/lu'
 
 const Navbar = () => {
   const router = useRouter();
@@ -59,7 +59,7 @@ const Navbar = () => {
                     router.push("/product/add");
                   }}
                   leftSection={
-                    <BiBookAdd style={{ width: rem(14), height: rem(14) }} />
+                    <LuPackagePlus style={{ width: rem(14), height: rem(14) }} />
                   }
                 >
                   Add Item
@@ -70,10 +70,21 @@ const Navbar = () => {
                     router.push("/userItems");
                   }}
                   leftSection={
-                    <BsFillCartFill style={{ width: rem(14), height: rem(14) }} />
+                    <LuShoppingCart style={{ width: rem(14), height: rem(14) }} />
                   }
                 >
                   My Items
+                </Menu.Item>
+                <Menu.Item
+                  className="hover:bg-slate-200"
+                  onClick={() => {
+                    router.push("/userRents");
+                  }}
+                  leftSection={
+                    <LuShoppingBag  style={{ width: rem(14), height: rem(14) }} />
+                  }
+                >
+                  My Rents
                 </Menu.Item>
                 <Menu.Item
                   className="hover:bg-red-100"
@@ -89,7 +100,7 @@ const Navbar = () => {
                     });
                   }}
                   leftSection={
-                    <BiLogOut style={{ width: rem(14), height: rem(14) }} />
+                    <LuLogOut style={{ width: rem(14), height: rem(14) }} />
                   }
                 >
                   Log out
