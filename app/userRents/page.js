@@ -3,12 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Image, Text, Group, Grid } from "@mantine/core";
 import Link from "next/link";
-
-
+import Spinner from "../components/Spinner/Spinner";
 
 const RequestItemCard = (item) => {
   let { id, title, description, price, photos } = item.item;
-  if(description?.length>36){
+  if (description?.length > 36) {
     description = description.slice(0, 33) + "...";
   }
   return (
@@ -20,7 +19,7 @@ const RequestItemCard = (item) => {
           alt={id}
           h={180}
           w="auto"
-        fallbackSrc="https://placehold.co/400x200?text=No%20Image"
+          fallbackSrc="https://placehold.co/400x200?text=No%20Image"
         />
       </Card.Section>
 
@@ -49,7 +48,7 @@ const RequestItemCard = (item) => {
 
       <Text size="sm" c="dimmed" mt="xs" mb="xs">
         {description}
-        </Text>
+      </Text>
 
       <div className="flex justify-between">
         <button
@@ -75,6 +74,7 @@ const RequestItemCard = (item) => {
 const UserRents = () => {
   const [shouldRunEffect, setShouldRunEffect] = useState(false);
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -95,6 +95,7 @@ const UserRents = () => {
         console.log(json.rentals)
         setItems(json.rentals);
       }
+      setLoading(false)
     };
     fetchItems();
   }, [shouldRunEffect]);
@@ -104,6 +105,14 @@ const UserRents = () => {
       <p className="2xl:text-[30px] sm:text-[30px] text-[30px] font-semibold pt-10">
         Incoming Rent Requests:
       </p>
+      {items.length === 0 && (
+        <>
+          <p className="text-center mt-4">You have no incoming requests.</p>
+          {loading && (
+            <Spinner />
+          )}
+        </>
+      )}
       <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
         {items.map((item) => (
           <div key={item.id} className="col-md-4">
