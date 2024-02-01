@@ -1,15 +1,17 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { Card, Image, Text, Group, Grid } from "@mantine/core";
 import Link from "next/link";
 import Spinner from "../components/Spinner/Spinner";
 
-const RequestItemCard = (item) => {
-  let { id, title, description, price, photos } = item.item;
-  if (description?.length > 36) {
-    description = description.slice(0, 33) + "...";
-  }
+const truncateDescription = (description) => {
+  return description?.length > 36 ? description.slice(0, 33) + "..." : description;
+};
+
+const ItemCard = ({ item, button, status }) => {
+  const { id, title, description, price, photos } = item;
+  console.log(item)
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
@@ -25,9 +27,7 @@ const RequestItemCard = (item) => {
 
       <Grid mt="md">
         <Grid.Col span={6}>
-          <Link
-            href={`/product/${id}`}
-          >
+          <Link href={`/product/${id}`}>
             <Text justify="left" align="left" fw={500}>
               {title}
             </Text>
@@ -47,81 +47,108 @@ const RequestItemCard = (item) => {
       </Grid>
 
       <Text size="sm" c="dimmed" mt="xs" mb="xs">
-        {description}
+        {truncateDescription(description)}
       </Text>
 
       <div className="flex justify-between">
-        <button
-          className="mt-4 w-full px-4 py-2 leading-5 font-bold text-green-700 transition-colors duration-200 transform bg-green-100 rounded focus:outline-none mr-2"
-        // onClick={() => {
-        //   onOpenModal();
-        // }}
-        >
-          Approve
-        </button>
-        <button className="mt-4 w-full px-4 py-2 leading-5 font-bold text-red-700 transition-colors duration-200 transform bg-red-100 rounded focus:outline-none"
-        // onClick={() => {
-        //   onDeleteItem();
-        // }}
-        >
-          Deny
-        </button>
+        {button ? (
+          <>
+            <button
+              className="mt-4 w-full px-4 py-2 leading-5 font-bold text-green-700 transition-colors duration-200 transform bg-green-100 rounded focus:outline-none mr-2"
+            >
+              Approve
+            </button>
+            <button
+              className="mt-4 w-full px-4 py-2 leading-5 font-bold text-red-700 transition-colors duration-200 transform bg-red-100 rounded focus:outline-none"
+            >
+              Deny
+            </button>
+          </>
+        ) : (
+          <button
+            className="cursor-default mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none mr-2"
+          >
+            {status}
+          </button>
+        )}
       </div>
     </Card>
   );
 };
 
+const fetchRentRequests = async (token, method) => {
+  const response = await fetch('/api/item/rentRequests', {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ authToken: token }),
+  });
+  const json = await response.json();
+  return json.success ? json.rentals : [];
+};
+
 const UserRents = () => {
-  const [shouldRunEffect, setShouldRunEffect] = useState(false);
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [myItems, setMyItems] = useState([]);
+  const [incomingItems, setIncomingItems] = useState([]);
+  const [myRequestLoading, setMyRequestLoading] = useState(true);
+  const [incomingLoading, setIncomingLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!shouldRunEffect) {
-      setShouldRunEffect(true);
-      return;
-    }
-    const fetchItems = async () => {
-      const response = await fetch('/api/item/rentRequests', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ authToken: token })
-      });
-      const json = await response.json();
-      if (json.success) {
-        console.log(json.rentals)
-        setItems(json.rentals);
-      }
-      setLoading(false)
+
+    const fetchRequests = async () => {
+      const myItems = await fetchRentRequests(token, 'PUT');
+      const incomingItems = await fetchRentRequests(token, 'POST');
+
+      setMyItems(myItems);
+      setMyRequestLoading(false);
+      setIncomingItems(incomingItems);
+      setIncomingLoading(false);
     };
-    fetchItems();
-  }, [shouldRunEffect]);
+
+    fetchRequests();
+  }, []);
 
   return (
     <div className="pt-8 padding-x">
       <p className="2xl:text-[30px] sm:text-[30px] text-[30px] font-semibold pt-10">
+        My Rent Requests:
+      </p>
+      {myItems.length === 0 ? (
+        <>
+          <p className="text-center mt-4">Feel free to explore and request items for rent.</p>
+          {myRequestLoading && <Spinner />}
+        </>
+      ) : (
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
+          {myItems.map((item) => (
+            <div key={item.id} className="col-md-4">
+              <ItemCard item={item.item} status={item.status} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <p className="2xl:text-[30px] sm:text-[30px] text-[30px] font-semibold pt-10">
         Incoming Rent Requests:
       </p>
-      {items.length === 0 && (
+      {incomingItems.length === 0 ? (
         <>
-          <p className="text-center mt-4">You have no incoming requests.</p>
-          {loading && (
-            <Spinner />
-          )}
+          <p className="text-center mt-4">No one is currently requesting to rent your items.</p>
+          {incomingLoading && <Spinner />}
         </>
+      ) : (
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
+          {incomingItems.map((item) => (
+            <div key={item.id} className="col-md-4">
+              <ItemCard item={item.item} button={true} />
+            </div>
+          ))}
+        </div>
       )}
-      <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
-        {items.map((item) => (
-          <div key={item.id} className="col-md-4">
-            <RequestItemCard item={item.item} />
-          </div>
-        ))}
-      </div>
     </div>
-  )
-}
+  );
+};
 
-export default UserRents
+export default UserRents;
