@@ -7,6 +7,7 @@ export async function POST(req) {
         const body = await req.json();
         const { itemId, startDate, endDate, authToken } = body;
         const UserInfo = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
+
         // Check if the item is available
         const item = await prisma.item.findUnique({
             where: { id: parseInt(itemId) },
@@ -44,28 +45,74 @@ export async function POST(req) {
     }
 }
 
-export async function GET(req) {
+// Approve rent request
+export async function PUT(req) {
     try {
-        const { authToken } = req.headers;
+        const body = await req.json();
+        const { rentId, rentalId, authToken } = body;
         const UserInfo = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
 
-        // Find all the rentals that belong to the owner's items
-        const rentals = await prisma.rental.findMany({
-            where: {
-                item: {
-                    ownerId: parseInt(UserInfo.id),
-                },
-            },
-            include: {
-                item: true, // Include the item details
-                renter: true, // Include the renter details
-            },
+        // Check if the user has permission to approve the rental
+        const user = await prisma.user.findUnique({
+            where: { id: parseInt(UserInfo.id) },
+            include: { rentals: true },
         });
 
-        return NextResponse.json({ success: true, rentals }, { status: 200 });
+        // Check if the user is the owner of the rental
+        const isOwner = user.rentals.some(rental => rental.renterId === parseInt(rentalId));
+
+        if (!isOwner) {
+            return NextResponse.json({ success: false, message: "You don't have permission to approve this rental" }, { status: 403 });
+        }
+
+        // Update the rental status to "approve"
+        const updatedRental = await prisma.rental.update({
+            where: { id: parseInt(rentId), renterId: parseInt(rentalId) },
+            data: { status: 'approve' },
+        });
+
+        return NextResponse.json({ success: true, updatedRental }, { status: 200 });
+
     } catch (error) {
         console.log(error);
-        if (error instanceof jwt.JsonWebTokenError){
+        if (error instanceof jwt.JsonWebTokenError) {
+            return NextResponse.json({ success: false, message: "JsonWebTokenError: invalid signature!" }, { status: 401 });
+        }
+        return NextResponse.json({ success: false, message: "Something went wrong!" }, { status: 500 });
+    }
+}
+
+// Deny rent request
+export async function PATCH(req) {
+    try {
+        const body = await req.json();
+        const { rentId, rentalId, authToken } = body;
+        const UserInfo = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
+
+        // Check if the user has permission to deny the rental
+        const user = await prisma.user.findUnique({
+            where: { id: parseInt(UserInfo.id) },
+            include: { rentals: true },
+        });
+
+        // Check if the user is the owner of the rental
+        const isOwner = user.rentals.some(rental => rental.renterId === parseInt(rentalId));
+
+        if (!isOwner) {
+            return NextResponse.json({ success: false, message: "You don't have permission to deny this rental" }, { status: 403 });
+        }
+
+        // Update the rental status to "deny"
+        const updatedRental = await prisma.rental.update({
+            where: { id: parseInt(rentId), renterId: parseInt(rentalId) },
+            data: { status: 'deny' },
+        });
+
+        return NextResponse.json({ success: true, updatedRental }, { status: 200 });
+
+    } catch (error) {
+        console.log(error);
+        if (error instanceof jwt.JsonWebTokenError) {
             return NextResponse.json({ success: false, message: "JsonWebTokenError: invalid signature!" }, { status: 401 });
         }
         return NextResponse.json({ success: false, message: "Something went wrong!" }, { status: 500 });
