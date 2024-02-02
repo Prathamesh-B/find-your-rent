@@ -4,14 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { Card, Image, Text, Group, Grid } from "@mantine/core";
 import Link from "next/link";
 import Spinner from "../components/Spinner/Spinner";
+import { showNotification, updateNotification } from '@mantine/notifications';
+import { LuCheck, LuBan } from "react-icons/lu";
 
 const truncateDescription = (description) => {
   return description?.length > 36 ? description.slice(0, 33) + "..." : description;
 };
 
-const ItemCard = ({ item, button, status }) => {
+const ItemCard = ({ item, button, status, onApprove, onDeny }) => {
   const { id, title, description, price, photos } = item;
-  console.log(item)
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
@@ -50,28 +51,28 @@ const ItemCard = ({ item, button, status }) => {
         {truncateDescription(description)}
       </Text>
 
-      <div className="flex justify-between">
-        {button ? (
-          <>
-            <button
-              className="mt-4 w-full px-4 py-2 leading-5 font-bold text-green-700 transition-colors duration-200 transform bg-green-100 rounded focus:outline-none mr-2"
-            >
-              Approve
-            </button>
-            <button
-              className="mt-4 w-full px-4 py-2 leading-5 font-bold text-red-700 transition-colors duration-200 transform bg-red-100 rounded focus:outline-none"
-            >
-              Deny
-            </button>
-          </>
-        ) : (
+      <button
+        className="cursor-default mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none"
+      >
+        {status}
+      </button>
+      {button && (
+        <div className="flex justify-between mt-2">
           <button
-            className="cursor-default mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none mr-2"
+            onClick={onApprove}
+            className="w-full px-4 py-2 leading-5 font-bold text-green-700 transition-colors duration-200 transform bg-green-100 rounded focus:outline-none mr-2"
           >
-            {status}
+            Approve
           </button>
-        )}
-      </div>
+          <button
+            onClick={onDeny}
+            className="w-full px-4 py-2 leading-5 font-bold text-red-700 transition-colors duration-200 transform bg-red-100 rounded focus:outline-none"
+          >
+            Deny
+          </button>
+        </div>
+      )}
+
     </Card>
   );
 };
@@ -96,19 +97,133 @@ const UserRents = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-
     const fetchRequests = async () => {
       const myItems = await fetchRentRequests(token, 'PUT');
       const incomingItems = await fetchRentRequests(token, 'POST');
-
       setMyItems(myItems);
       setMyRequestLoading(false);
       setIncomingItems(incomingItems);
       setIncomingLoading(false);
     };
-
     fetchRequests();
   }, []);
+
+  const handleApprove = async (rentId, rentalId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('/api/item/rent', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rentId, rentalId, authToken: token }),
+      });
+
+      const json = await response.json();
+      if (json.success) {
+        // Update the status of the approved item in incomingItems
+        const updatedIncomingItems = incomingItems.map(item => {
+          if (item.id === rentId) {
+            return { ...item, status: 'Approve' };
+          }
+          return item;
+        });
+
+        // Set the updated state
+        setIncomingItems(updatedIncomingItems);
+
+        updateNotification({
+          id: 'request',
+          color: 'green',
+          autoClose: 5000,
+          icon: <LuCheck />,
+          title: "Success",
+          message: 'Request Approved Successfully',
+          loading: false,
+        });
+      } else {
+        updateNotification({
+          id: 'request',
+          color: 'red',
+          autoClose: 5000,
+          icon: <LuBan />,
+          title: "Error",
+          message: json.message,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      updateNotification({
+        id: 'request',
+        color: 'red',
+        autoClose: 5000,
+        icon: <LuBan />,
+        title: "Error while approving rental",
+        message: "Try again later",
+        loading: false,
+      });
+      console.error('Error while approving rental:', error);
+    }
+  };
+
+  const handleDeny = async (rentId, rentalId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('/api/item/rent', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rentId, rentalId, authToken: token }),
+      });
+
+      const json = await response.json();
+      if (json.success) {
+        // Update the status of the denied item in incomingItems
+        const updatedIncomingItems = incomingItems.map(item => {
+          if (item.id === rentId) {
+            return { ...item, status: 'Denied' };
+          }
+          return item;
+        });
+
+        // Set the updated state
+        setIncomingItems(updatedIncomingItems);
+
+        updateNotification({
+          id: 'request',
+          color: 'green',
+          autoClose: 5000,
+          icon: <LuCheck />,
+          title: "Success",
+          message: 'Request Denied Successfully',
+          loading: false,
+        });
+      } else {
+        updateNotification({
+          id: 'request',
+          color: 'red',
+          autoClose: 5000,
+          icon: <LuBan />,
+          title: "Error",
+          message: json.message,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      updateNotification({
+        id: 'request',
+        color: 'red',
+        autoClose: 5000,
+        icon: <LuBan />,
+        title: "Error while approving rental",
+        message: "Try again later",
+        loading: false,
+      });
+      console.error('Error while approving rental:', error);
+    }
+  };
+
 
   return (
     <div className="pt-8 padding-x">
@@ -142,7 +257,33 @@ const UserRents = () => {
         <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
           {incomingItems.map((item) => (
             <div key={item.id} className="col-md-4">
-              <ItemCard item={item.item} button={true} />
+              <ItemCard
+                item={item.item}
+                status={item.status}
+                button={true}
+                onApprove={() => {
+                  handleApprove(item.id, item.renterId);
+                  showNotification({
+                    id: 'request',
+                    autoClose: false,
+                    color: 'cyan',
+                    title: "Loading",
+                    message: 'Waiting for server',
+                    loading: true,
+                  });
+                }}
+                onDeny={() => {
+                  handleDeny(item.id, item.renterId);
+                  showNotification({
+                    id: 'request',
+                    autoClose: false,
+                    color: 'cyan',
+                    title: "Loading",
+                    message: 'Waiting for server',
+                    loading: true,
+                  });
+                }}
+              />
             </div>
           ))}
         </div>

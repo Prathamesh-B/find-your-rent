@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
 const jwt = require("jsonwebtoken");
 
+// Incoming rent requests to user
 export async function POST(req) {
     try {
         const body = await req.json();
@@ -14,7 +15,10 @@ export async function POST(req) {
                 item: {
                     ownerId: parseInt(UserInfo.id),
                 },
-                status: 'pending', // Only return pending rentals
+                OR: [
+                    { status: "Pending" },
+                    { status: "Approved" },
+                ],
             },
             include: {
                 item: true, // Include the item details
@@ -32,7 +36,7 @@ export async function POST(req) {
     }
 }
 
-
+// User rent requests to others
 export async function PUT(req) {
     try {
         const body = await req.json();

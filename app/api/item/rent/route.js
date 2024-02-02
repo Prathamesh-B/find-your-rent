@@ -24,7 +24,7 @@ export async function POST(req) {
                 item: { connect: { id: parseInt(itemId) } },
                 startDate: new Date(Date.now()),
                 endDate: new Date(Date.now()),
-                status: 'pending',
+                status: 'Pending',
             },
         });
 
@@ -53,13 +53,13 @@ export async function PUT(req) {
         const UserInfo = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
 
         // Check if the user has permission to approve the rental
-        const user = await prisma.user.findUnique({
-            where: { id: parseInt(UserInfo.id) },
-            include: { rentals: true },
+        const items = await prisma.rental.findUnique({
+            where: { id: parseInt(rentId) },
+            include: { item: true }
         });
 
         // Check if the user is the owner of the rental
-        const isOwner = user.rentals.some(rental => rental.renterId === parseInt(rentalId));
+        const isOwner = items.item.ownerId === parseInt(UserInfo.id);
 
         if (!isOwner) {
             return NextResponse.json({ success: false, message: "You don't have permission to approve this rental" }, { status: 403 });
@@ -68,7 +68,7 @@ export async function PUT(req) {
         // Update the rental status to "approve"
         const updatedRental = await prisma.rental.update({
             where: { id: parseInt(rentId), renterId: parseInt(rentalId) },
-            data: { status: 'approve' },
+            data: { status: 'Approved' },
         });
 
         return NextResponse.json({ success: true, updatedRental }, { status: 200 });
@@ -90,13 +90,13 @@ export async function PATCH(req) {
         const UserInfo = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
 
         // Check if the user has permission to deny the rental
-        const user = await prisma.user.findUnique({
-            where: { id: parseInt(UserInfo.id) },
-            include: { rentals: true },
+        const items = await prisma.rental.findUnique({
+            where: { id: parseInt(rentId) },
+            include: { item: true }
         });
 
         // Check if the user is the owner of the rental
-        const isOwner = user.rentals.some(rental => rental.renterId === parseInt(rentalId));
+        const isOwner = items.item.ownerId === parseInt(UserInfo.id);
 
         if (!isOwner) {
             return NextResponse.json({ success: false, message: "You don't have permission to deny this rental" }, { status: 403 });
@@ -105,7 +105,13 @@ export async function PATCH(req) {
         // Update the rental status to "deny"
         const updatedRental = await prisma.rental.update({
             where: { id: parseInt(rentId), renterId: parseInt(rentalId) },
-            data: { status: 'deny' },
+            data: { status: 'Denied' },
+        });
+
+        // Update the item's availability to true
+        await prisma.item.update({
+            where: { id: parseInt(updatedRental.itemId) },
+            data: { isAvailable: true },
         });
 
         return NextResponse.json({ success: true, updatedRental }, { status: 200 });
