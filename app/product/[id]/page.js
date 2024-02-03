@@ -46,35 +46,48 @@ export default function Page({ params }) {
     }, [router, params.id, shouldRunEffect]);
 
     const handleSendRequest = async (authToken, itemId) => {
-        const response = await fetch('/api/item/rent', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ itemId, authToken })
-        });
-        const json = await response.json();
-        if (json.success) {
-            // Update the itemData state to mark it as not available
-            setItemData(prevItemData => ({ ...prevItemData, isAvailable: false }));
-            updateNotification({
-                id: 'rent',
-                color: 'green',
-                autoClose: 5000,
-                title: "Send",
-                message: 'Rent Request Send Successfully',
-                loading: false,
+        try {
+            const response = await fetch('/api/item/rent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ itemId, authToken })
             });
-        } else {
+            const json = await response.json();
+            if (json.success) {
+                // Update the itemData state to mark it as not available
+                setItemData(prevItemData => ({ ...prevItemData, isAvailable: false }));
+                updateNotification({
+                    id: 'rent',
+                    color: 'green',
+                    autoClose: 5000,
+                    title: "Send",
+                    message: 'Rent Request Send Successfully',
+                    loading: false,
+                });
+            } else {
+                updateNotification({
+                    id: 'rent',
+                    color: 'red',
+                    autoClose: 5000,
+                    icon: <BiSolidError />,
+                    title: "Error",
+                    message: json.message,
+                    loading: false,
+                });
+            }
+        } catch (error) {
             updateNotification({
-                id: 'rent',
+                id: 'request',
                 color: 'red',
                 autoClose: 5000,
                 icon: <BiSolidError />,
-                title: "Error",
-                message: 'Server error',
+                title: "Error while sending request",
+                message: "Try again later",
                 loading: false,
             });
+            console.error('Error while sending request:', error);
         }
     };
 

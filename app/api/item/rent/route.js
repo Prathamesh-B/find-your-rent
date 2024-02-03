@@ -17,11 +17,16 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: 'Item is not available for rent' }, { status: 400 });
         }
 
+        // Check if the renter is the owner of the item
+        if (item.ownerId === UserInfo.id) {
+            return NextResponse.json({ success: false, message: 'You cannot rent your own item' }, { status: 400 });
+        }
+
         // Create a new rental
         const newRental = await prisma.rental.create({
             data: {
-                renter: { connect: { id: parseInt(UserInfo.id) } },
-                item: { connect: { id: parseInt(itemId) } },
+                renterId: UserInfo.id,
+                itemId: parseInt(itemId),
                 startDate: new Date(Date.now()),
                 endDate: new Date(Date.now()),
                 status: 'Pending',
