@@ -88,7 +88,7 @@ const UserItems = () => {
                 autoClose: 5000,
                 icon: <MdFileDownloadDone />,
                 title: "Delete",
-                message: 'Item deleted Successfully',
+                message: json.message,
                 loading: false,
             });
         } else {
@@ -98,7 +98,7 @@ const UserItems = () => {
                 autoClose: 5000,
                 icon: <BiSolidError />,
                 title: "Error",
-                message: 'Server error',
+                message: json.message,
                 loading: false,
             });
         }
