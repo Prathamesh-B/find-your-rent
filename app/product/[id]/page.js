@@ -1,4 +1,5 @@
 "use client"
+
 import { useRouter } from 'next/navigation';
 import Spinner from '@/app/components/Spinner/Spinner';
 import { Carousel } from '@mantine/carousel';
@@ -10,15 +11,9 @@ import { BiSolidError } from 'react-icons/bi';
 export default function Page({ params }) {
     const router = useRouter()
     const [opened, setOpened] = useState(false);
-    const [shouldRunEffect, setShouldRunEffect] = useState(false);
     const [itemData, setItemData] = useState(null);
 
     useEffect(() => {
-        if (!shouldRunEffect) {
-            setShouldRunEffect(true);
-            return;
-        }
-
         const fetchItemDetails = async () => {
             try {
                 const response = await fetch(`/api/item/getItem/${params.id}`);
@@ -43,7 +38,7 @@ export default function Page({ params }) {
         };
 
         fetchItemDetails();
-    }, [router, params.id, shouldRunEffect]);
+    }, [router, params.id]);
 
     const handleSendRequest = async (authToken, itemId) => {
         try {
@@ -79,7 +74,7 @@ export default function Page({ params }) {
             }
         } catch (error) {
             updateNotification({
-                id: 'request',
+                id: 'rent',
                 color: 'red',
                 autoClose: 5000,
                 icon: <BiSolidError />,

@@ -13,10 +13,10 @@ export async function POST(req) {
                 id: parseInt(id),
             }
         })
-        
+
         if (deletedItem.photos && deletedItem.photos.length > 0) {
             for (const imageUrl of deletedItem.photos) {
-                // Extract the file name from the URL (adjust this based on your Supabase setup)
+                // Extract the file name from the URL
                 const fileName = imageUrl.split('/').pop();
 
                 // Delete the image from Supabase storage

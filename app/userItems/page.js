@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Modal, Textarea, Input, Loader } from '@mantine/core';
+import { Modal, Textarea, Input } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import InfiniteScroll from "react-infinite-scroll-component";
 import ItemCard from "../components/ItemCard/UserItemCard";
 import { BiSolidError, BiSolidPencil } from "react-icons/bi";
 import { MdFileDownloadDone } from "react-icons/md";
 import Spinner from "../components/Spinner/Spinner";
+import { useRouter } from "next/navigation";
 
 const UserItems = () => {
     const [opened, setOpened] = useState(false);
@@ -19,9 +20,13 @@ const UserItems = () => {
     const [skip, setSkip] = useState(1);
     const [hasMoreData, setHasMoreData] = useState(true);
     const [shouldRunEffect, setShouldRunEffect] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        if (!token) {
+            router.push("/");
+        }
         if (!shouldRunEffect) {
             setShouldRunEffect(true);
             return;
@@ -43,7 +48,7 @@ const UserItems = () => {
             }
         };
         fetchItems();
-    }, [skip, shouldRunEffect]);
+    }, [skip, shouldRunEffect, router]);
 
     const loadMore = () => {
         setSkip((oldSkip) => oldSkip + 1);
@@ -240,7 +245,6 @@ const UserItems = () => {
                         </div>
                     </>)}
             </InfiniteScroll>
-
         </div>
     );
 };

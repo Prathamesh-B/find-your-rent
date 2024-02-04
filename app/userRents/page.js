@@ -6,12 +6,13 @@ import Link from "next/link";
 import Spinner from "../components/Spinner/Spinner";
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { LuCheck, LuBan } from "react-icons/lu";
+import { useRouter } from 'next/navigation';
 
 const truncateDescription = (description) => {
   return description?.length > 36 ? description.slice(0, 33) + "..." : description;
 };
 
-const ItemCard = ({ item, button, status, onApprove, onDeny }) => {
+const ItemCard = ({ item, button, status = "Not Available", onApprove, onDeny }) => {
   const { id, title, description, price, photos } = item;
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
@@ -52,7 +53,10 @@ const ItemCard = ({ item, button, status, onApprove, onDeny }) => {
       </Text>
 
       <button
-        className="cursor-default mt-4 w-full px-4 py-2 leading-5 font-bold text-orange-fyr transition-colors duration-200 transform bg-orange-100 rounded focus:outline-none"
+        className={`cursor-default mt-4 w-full px-4 py-2 leading-5 font-bold transition-colors duration-200 transform rounded focus:outline-none ${status === 'Pending' ? 'text-yellow-500 bg-yellow-50' :
+          status === 'Approved' ? 'text-green-500 bg-green-50' :
+            status === 'Denied' ? 'text-red-500 bg-red-50' : ''
+          }`}
       >
         {status}
       </button>
@@ -94,9 +98,13 @@ const UserRents = () => {
   const [incomingItems, setIncomingItems] = useState([]);
   const [myRequestLoading, setMyRequestLoading] = useState(true);
   const [incomingLoading, setIncomingLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    if (!token) {
+      router.push("/");
+    }
     const fetchRequests = async () => {
       const myItems = await fetchRentRequests(token, 'PUT');
       const incomingItems = await fetchRentRequests(token, 'POST');
@@ -106,7 +114,7 @@ const UserRents = () => {
       setIncomingLoading(false);
     };
     fetchRequests();
-  }, []);
+  }, [router]);
 
   const handleApprove = async (rentId, rentalId) => {
     const token = localStorage.getItem('token');
@@ -124,7 +132,7 @@ const UserRents = () => {
         // Update the status of the approved item in incomingItems
         const updatedIncomingItems = incomingItems.map(item => {
           if (item.id === rentId) {
-            return { ...item, status: 'Approve' };
+            return { ...item, status: 'Approved' };
           }
           return item;
         });

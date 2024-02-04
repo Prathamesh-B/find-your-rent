@@ -28,8 +28,7 @@ const Login = () => {
             body: JSON.stringify({ email: credentials.email, password: credentials.password })
         });
         const json = await response.json()
-        console.log(response)
-        if(response.status === 422){
+        if (response.status === 422) {
             router.push("/signup")
             updateNotification({
                 id: 'signin',
@@ -37,11 +36,10 @@ const Login = () => {
                 autoClose: 5000,
                 icon: <BiSolidError />,
                 title: "Account Not Found",
-                message: 'Please signup first',
+                message: 'Please Signup First',
                 loading: false,
             })
-        }
-        else if (json.success) {
+        } else if (json.success) {
             // Save the auth token and redirect
             localStorage.setItem('token', json.authtoken);
             updateNotification({
@@ -54,8 +52,7 @@ const Login = () => {
                 loading: false,
             })
             router.push("/");
-        }
-        else {
+        } else {
             updateNotification({
                 id: 'signin',
                 color: 'red',

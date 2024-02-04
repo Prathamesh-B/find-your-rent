@@ -17,6 +17,7 @@ const Items = () => {
       setShouldRunEffect(true);
       return;
     }
+
     const fetchItems = async () => {
       const response = await fetch(`/api/item/page/${skip}`);
       const json = await response.json();

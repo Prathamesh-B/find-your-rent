@@ -39,8 +39,7 @@ const Signup = () => {
                 loading: false,
             })
             router.push("/");
-        }
-        else {
+        } else {
             updateNotification({
                 id: 'signin',
                 color: 'red',

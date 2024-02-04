@@ -9,7 +9,6 @@ export async function POST(req) {
         const UserInfo = jwt.verify(authToken, process.env.NEXT_PUBLIC_JWT_SECRET);
         const page = req.url.split("userItems/")[1] - 1
         const result = await prisma.item.findMany({
-            
             skip: page > 0 ? page * 8 : 0,
             take: 8,
             where: {
