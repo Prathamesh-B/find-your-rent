@@ -5,7 +5,7 @@ import { Card, Image, Text, Group, Grid } from "@mantine/core";
 import Link from "next/link";
 import Spinner from "../components/Spinner/Spinner";
 import { showNotification, updateNotification } from '@mantine/notifications';
-import { LuCheck, LuBan } from "react-icons/lu";
+import { LuCheck, LuBan, LuX } from "react-icons/lu";
 import { useRouter } from 'next/navigation';
 
 const truncateDescription = (description) => {
@@ -17,6 +17,11 @@ const ItemCard = ({ item, button, status = "Not Available", onApprove, onDeny })
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
+        {(status === "Pending" || status === "Denied") && !button && (
+          <div className="absolute top-0 right-0 p-1 bg-red-600 text-white cursor-pointer rounded-bl-md">
+            <LuX />
+          </div>
+        )}
         <Image
           className="block ml-auto mr-auto"
           src={photos[0]}
@@ -247,7 +252,7 @@ const UserRents = () => {
         <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
           {myItems.map((item) => (
             <div key={item.id} className="col-md-4">
-              <ItemCard item={item.item} status={item.status} />
+              <ItemCard item={item.item} status={item.status} button={false} />
             </div>
           ))}
         </div>
