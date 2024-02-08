@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/db'
 
+// Create a new rental request
 export async function POST(req) {
     try {
         const body = await req.json();
@@ -75,6 +76,15 @@ export async function PUT(req) {
             where: { id: parseInt(rentId), renterId: parseInt(rentalId) },
             data: { status: 'Approved' },
         });
+
+        // Check if the item was denied and update its availability
+        if (items.status === 'Denied') {
+            // Update the item's availability to true
+            await prisma.item.update({
+                where: { id: parseInt(updatedRental.itemId) },
+                data: { isAvailable: false },
+            });
+        }
 
         return NextResponse.json({ success: true, updatedRental }, { status: 200 });
 
