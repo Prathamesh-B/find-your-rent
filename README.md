@@ -22,7 +22,6 @@ Here're some of the project's best features:
 *   CRUD Operations
 *   Interactive User Interface
 *   PostGreSQL Database
-
  
 <h2>💻 Built with</h2>
 
@@ -33,3 +32,10 @@ Technologies used in the project:
 *   PostGreSQL
 *   Prisma ORM
 *   JSON Web Token
+
+<h2>🛠️ Backend</h2>
+
+Java Spring Boot backend for the FindYourRent project can be found [here](https://github.com/Prathamesh-B/find-your-rent-backend).
+*   Spring Web
+*   Spring Data JPA
+*   Maven
