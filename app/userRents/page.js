@@ -12,14 +12,25 @@ const truncateDescription = (description) => {
   return description?.length > 36 ? description.slice(0, 33) + "..." : description;
 };
 
-const ItemCard = ({ item, button, status = "Not Available", onApprove, onDeny }) => {
+const ItemCard = ({ item, button, status = "Not Available", onApprove, onDeny, onCancel, rentId }) => {
   const { id, title, description, price, photos } = item;
+
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
         {(status === "Pending" || status === "Denied") && !button && (
           <div className="absolute top-0 right-0 p-1 bg-red-600 text-white cursor-pointer rounded-bl-md">
-            <LuX />
+            <LuX onClick={() => {
+              onCancel(rentId)
+              showNotification({
+                id: 'request',
+                autoClose: false,
+                color: 'cyan',
+                title: "Loading",
+                message: 'Waiting for server',
+                loading: true,
+              });
+            }} />
           </div>
         )}
         <Image
@@ -237,6 +248,56 @@ const UserRents = () => {
     }
   };
 
+  const handleCancel = async (rentId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('/api/item/cancelRentRequest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rentId, authToken: token }),
+      });
+
+      const json = await response.json();
+      if (json.success) {
+        const updatedMyItems = myItems.filter(item => item.id !== rentId);
+        // Set the updated state
+        setMyItems(updatedMyItems);
+
+        updateNotification({
+          id: 'request',
+          color: 'green',
+          autoClose: 5000,
+          icon: <LuCheck />,
+          title: "Success",
+          message: 'Request Cancelled Successfully',
+          loading: false,
+        });
+      } else {
+        updateNotification({
+          id: 'request',
+          color: 'red',
+          autoClose: 5000,
+          icon: <LuBan />,
+          title: "Error",
+          message: json.message,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      updateNotification({
+        id: 'request',
+        color: 'red',
+        autoClose: 5000,
+        icon: <LuBan />,
+        title: "Error while cancelling request",
+        message: "Try again later",
+        loading: false,
+      });
+      console.error('Error while cancelling request:', error);
+    }
+  };
 
   return (
     <div className="pt-8 padding-x">
@@ -252,7 +313,7 @@ const UserRents = () => {
         <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-4">
           {myItems.map((item) => (
             <div key={item.id} className="col-md-4">
-              <ItemCard item={item.item} status={item.status} button={false} />
+              <ItemCard item={item.item} status={item.status} button={false} onCancel={handleCancel} rentId={item.id} />
             </div>
           ))}
         </div>
