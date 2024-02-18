@@ -10,6 +10,7 @@ export async function POST(req) {
 
         const rental = await prisma.rental.findUnique({
             where: { id: parseInt(rentId) },
+            include: { item: true }, // Include the associated item in the query
         });
 
         if (!rental) {
@@ -18,6 +19,14 @@ export async function POST(req) {
 
         if (rental.renterId !== UserInfo.id) {
             return NextResponse.json({ success: false, message: "You don't have permission to cancel this rental" }, { status: 403 });
+        }
+
+        if (rental.status == 'Pending') {
+            // Update item availability to true if status is 'Pending'
+            await prisma.item.update({
+                where: { id: rental.item.id },
+                data: { isAvailable: true },
+            });
         }
 
         // Delete rent request from database
