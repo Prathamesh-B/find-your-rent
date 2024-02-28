@@ -15,6 +15,7 @@ model User {
   username  String
   email     String   @unique
   password  String
+  mobile    String
   items     Item[]   // User can have multiple items for rent
   rentals   Rental[] // User can have multiple rentals
 }

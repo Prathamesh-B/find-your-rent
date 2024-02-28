@@ -15,16 +15,36 @@ const Signup = () => {
             router.push("/");
         }
     })
-    const [credentials, setCredentials] = useState({ username: "", email: "", password: "" })
+
+    const [credentials, setCredentials] = useState({ username: "", email: "", password: "", mobile: "" })
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isNaN(credentials.mobile)) {
+            showNotification({
+                id: 'signin',
+                color: 'red',
+                autoClose: 5000,
+                icon: <BiSolidError />,
+                title: 'Error',
+                message: 'Mobile Number must be a valid number',
+                loading: false,
+            });
+            return;
+        }
         const response = await fetch("api/auth/signup", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username: credentials.username, email: credentials.email, password: credentials.password })
+            body: JSON.stringify({
+                username: credentials.username,
+                email: credentials.email,
+                mobile: credentials.mobile,
+                password: credentials.password
+            })
         });
+
         const json = await response.json()
         if (json.success) {
             // Save the auth token and redirect
@@ -92,6 +112,18 @@ const Signup = () => {
                                 placeholder="User Name"
                                 required
                                 onChange={onChange} />
+                        </div>
+                        <div className="w-full mt-4">
+                            <Input
+                                type="text"
+                                variant="default"
+                                name="mobile"
+                                placeholder="Mobile Number"
+                                maxLength={10}
+                                minLength={10}
+                                required
+                                onChange={onChange}
+                            />
                         </div>
                         <div className="w-full mt-4">
                             <PasswordInput
