@@ -1,101 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Card, Image, Text, Group, Grid } from "@mantine/core";
-import Link from "next/link";
+import { Modal } from "@mantine/core";
 import Spinner from "../components/Spinner/Spinner";
 import { showNotification, updateNotification } from '@mantine/notifications';
-import { LuCheck, LuBan, LuX } from "react-icons/lu";
+import { LuCheck, LuBan } from "react-icons/lu";
 import { useRouter } from 'next/navigation';
-
-const truncateDescription = (description) => {
-  return description?.length > 36 ? description.slice(0, 33) + "..." : description;
-};
-
-const ItemCard = ({ item, button, status = "Not Available", onApprove, onDeny, onCancel, rentId }) => {
-  const { id, title, description, price, photos } = item;
-
-  return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Card.Section>
-        {(status === "Pending" || status === "Denied") && !button && (
-          <div className="absolute top-0 right-0 p-1 bg-red-600 text-white cursor-pointer rounded-bl-md">
-            <LuX onClick={() => {
-              onCancel(rentId)
-              showNotification({
-                id: 'request',
-                autoClose: false,
-                color: 'cyan',
-                title: "Loading",
-                message: 'Waiting for server',
-                loading: true,
-              });
-            }} />
-          </div>
-        )}
-        <Image
-          className="block ml-auto mr-auto"
-          src={photos[0]}
-          alt={id}
-          h={180}
-          w="auto"
-          fallbackSrc="https://placehold.co/400x200?text=No%20Image"
-        />
-      </Card.Section>
-
-      <Grid mt="md">
-        <Grid.Col span={6}>
-          <Link href={`/product/${id}`}>
-            <Text justify="left" align="left" fw={500}>
-              {title}
-            </Text>
-          </Link>
-        </Grid.Col>
-        <div className="col-span-2"></div>
-
-        <Grid.Col span={6}>
-          <Group justify="right" align="right">
-            <p className="flex text-[32px]">
-              <span className="self-start text-[14px] ">Rent: Rs</span>
-              {price}
-              <span className="self-end text-[14px] ">/day</span>
-            </p>
-          </Group>
-        </Grid.Col>
-      </Grid>
-
-      <Text size="sm" c="dimmed" mt="xs" mb="xs">
-        {truncateDescription(description)}
-      </Text>
-
-      <button
-        className={`cursor-default mt-4 w-full px-4 py-2 leading-5 font-bold transition-colors duration-200 transform rounded focus:outline-none ${status === 'Pending' ? 'text-yellow-500 bg-yellow-50' :
-          status === 'Approved' ? 'text-green-500 bg-green-50' :
-            status === 'Denied' ? 'text-red-500 bg-red-50' : ''
-          }`}
-      >
-        {status}
-      </button>
-      {button && (
-        <div className="flex justify-between mt-2">
-          <button
-            onClick={onApprove}
-            className="w-full px-4 py-2 leading-5 font-bold text-green-700 transition-colors duration-200 transform bg-green-100 rounded focus:outline-none mr-2"
-          >
-            Approve
-          </button>
-          <button
-            onClick={onDeny}
-            className="w-full px-4 py-2 leading-5 font-bold text-red-700 transition-colors duration-200 transform bg-red-100 rounded focus:outline-none"
-          >
-            Deny
-          </button>
-        </div>
-      )}
-
-    </Card>
-  );
-};
+import ItemCard from '../components/ItemCard/RentPageItemCard';
 
 const fetchRentRequests = async (token, method) => {
   const response = await fetch('/api/item/rentRequests', {
@@ -114,6 +25,8 @@ const UserRents = () => {
   const [incomingItems, setIncomingItems] = useState([]);
   const [myRequestLoading, setMyRequestLoading] = useState(true);
   const [incomingLoading, setIncomingLoading] = useState(true);
+  const [approveModal, setApproveModal] = useState(false)
+  const [itemState, setItemState] = useState({})
   const router = useRouter();
 
   useEffect(() => {
@@ -301,6 +214,27 @@ const UserRents = () => {
 
   return (
     <div className="pt-8 padding-x">
+      <Modal centered opened={approveModal} onClose={() => setApproveModal(false)} title="Renter details">
+        <p className='text-lg'>Name: {itemState?.renter?.username}</p>
+        <p className='text-lg'>You can contact the renter on the following email: {itemState?.renter?.email}</p>
+        <button
+          className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none"
+          onClick={() => {
+            handleApprove(itemState.id, itemState.renterId);
+            showNotification({
+              id: 'request',
+              autoClose: false,
+              color: 'cyan',
+              title: "Loading",
+              message: 'Waiting for server',
+              loading: true,
+            });
+            setApproveModal(false);
+          }}
+        >
+          Approve
+        </button>
+      </Modal>
       <p className="2xl:text-[30px] sm:text-[30px] text-[30px] font-semibold pt-10">
         My Rent Requests:
       </p>
@@ -336,15 +270,8 @@ const UserRents = () => {
                 status={item.status}
                 button={true}
                 onApprove={() => {
-                  handleApprove(item.id, item.renterId);
-                  showNotification({
-                    id: 'request',
-                    autoClose: false,
-                    color: 'cyan',
-                    title: "Loading",
-                    message: 'Waiting for server',
-                    loading: true,
-                  });
+                  setItemState(item);
+                  setApproveModal(true);
                 }}
                 onDeny={() => {
                   handleDeny(item.id, item.renterId);
