@@ -6,7 +6,7 @@ import { LuX } from "react-icons/lu";
 
 const truncateDescription = (description) => {
     return description?.length > 36
-        ? description.slice(0, 33) + "..."
+        ? description.slice(0, 30) + "..."
         : description;
 };
 

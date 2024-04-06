@@ -103,7 +103,19 @@ export default function Page({ params }) {
                 <button
                     className="mt-4 w-full px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none"
                     onClick={() => {
-                        handleSendRequest(localStorage.getItem('token'), itemData.id);
+                        let authToken = localStorage.getItem('token');
+                        if (!authToken) {
+                            showNotification({
+                                id: 'login',
+                                autoClose: true,
+                                color: 'yellow',
+                                title: "Login in first",
+                                message: 'Redirecting to login',
+                            });
+                            router.push("/login");
+                            return;
+                        }
+                        handleSendRequest(authToken, itemData.id);
                         showNotification({
                             id: 'rent',
                             autoClose: false,
@@ -154,7 +166,7 @@ export default function Page({ params }) {
                                     onClick={() => setOpened(true)}
                                     className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-orange-fyr rounded hover:bg-oragne-secondary-fyr focus:outline-none"
                                 >
-                                    Rent
+                                    Request
                                 </button>
                             ) : <button
                                 className="mt-4 px-4 py-2 leading-5 font-bold text-white transition-colors duration-200 transform bg-slate-700 rounded hover:bg-slate-600 focus:outline-none"

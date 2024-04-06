@@ -6,7 +6,7 @@ export const footerLinks = [
             { title: "Support", url: "/" },
         ],
     },
-    
+
     // {
     //     title: "Socials",
     //     links: [
