@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, Image, Text, Group, Grid } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import Link from "next/link";
 import { LuX } from "react-icons/lu";
 
