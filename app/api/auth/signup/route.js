@@ -25,7 +25,7 @@ export async function POST(req) {
             data: {
                 username,
                 email,
-                mobile: parseInt(mobile),
+                mobile,
                 password: hashedPassword
             }
         })
